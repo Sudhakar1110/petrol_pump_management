@@ -22,7 +22,7 @@ def fix_workspace_public():
     frappe.reload_doctype("Workspace")
     frappe.db.sql(
         'UPDATE `tabWorkspace` SET public=1 WHERE name=%s',
-        ("PP Management",)
+        ("Petrol Pump Management",)
     )
 
 
