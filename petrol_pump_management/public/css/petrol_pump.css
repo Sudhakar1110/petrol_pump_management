@@ -1,0 +1,5 @@
+/* Petrol Pump Management - Custom Styles */
+.fuel-sale-card { border-left: 4px solid #5e64ff; margin-bottom: 15px; }
+.credit-warning { background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 10px; margin-bottom: 10px; }
+.stock-alert { background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px; }
+.shift-settlement-card { border: 1px solid #dee2e6; border-radius: 4px; padding: 15px; background-color: #f8f9fa; }
