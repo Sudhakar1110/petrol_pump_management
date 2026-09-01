@@ -17,78 +17,77 @@ def after_migrate():
 
 
 def _create_workspace():
-    """Create workspace with links. Uses ORM for both parent and children."""
+    """Create workspace with links using pure SQL for both parent and children."""
     ws_name = "Petrol Pump Management"
 
-    # Skip if workspace already has links
+    # Skip if already done
     if frappe.db.exists("Workspace", ws_name):
         count = frappe.db.count("Workspace Link", {"parent": ws_name})
         if count > 0:
             return
 
-    # Clean up any broken workspace
+    # Clean up
     frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent LIKE '%%Petrol Pump%%'")
     frappe.db.sql("DELETE FROM `tabWorkspace` WHERE module = 'PP Management'")
     frappe.db.commit()
 
+    now = str(frappe.utils.now_datetime())
     cards = _get_cards_config()
+
     card_names = [c["label"] for c in cards]
     content = json.dumps([
         {"type": "card", "data": {"card_name": cn, "col": 4}}
         for cn in card_names
     ])
 
-    # Create workspace doc - use flags to bypass restrictions
-    old_in_install = frappe.flags.in_install
-    old_in_migrate = frappe.flags.in_migrate
-    frappe.flags.in_install = False
-    frappe.flags.in_migrate = False
+    # Step 1: Insert workspace via pure SQL
+    frappe.db.sql("""
+        INSERT INTO `tabWorkspace`
+        (name, label, title, module, icon, indicator_color,
+         public, is_hidden, content, standard, docstatus,
+         owner, modified_by, modified, creation)
+        VALUES (%s, %s, %s, %s, %s, %s,
+                1, 0, %s, 1, 0,
+                'Administrator', 'Administrator', %s, %s)
+    """, (ws_name, ws_name, ws_name, "PP Management",
+          "octicon octicon-fuel", "orange", content, now, now))
 
-    try:
-        doc = frappe.get_doc({
-            "doctype": "Workspace",
-            "label": ws_name,
-            "title": ws_name,
-            "module": "PP Management",
-            "icon": "octicon octicon-fuel",
-            "indicator_color": "orange",
-            "public": 1,
-            "is_hidden": 0,
-            "content": content,
-            "type": "Workspace",
-        })
-        doc.flags.with_module = True
-        doc.flags.ignore_links = True
+    # Step 2: Insert ALL links via pure SQL
+    idx = 1
+    for card in cards:
+        frappe.db.sql("""
+            INSERT INTO `tabWorkspace Link`
+            (name, parent, parenttype, parentfield, idx,
+             type, label, icon, link_count, hidden, docstatus,
+             owner, modified_by, modified, creation)
+            VALUES (%s, %s, 'Workspace', 'links', %s,
+                    'Card Break', %s, %s, %s, 0, 0,
+                    'Administrator', 'Administrator', %s, %s)
+        """, (f"{ws_name}-{idx}", ws_name, idx,
+              card["label"], card.get("icon", ""), len(card["links"]), now, now))
+        idx += 1
 
-        for card in cards:
-            doc.append("links", {
-                "type": "Card Break",
-                "label": card["label"],
-                "icon": card.get("icon", ""),
-                "link_count": len(card["links"]),
-            })
-            for link_type, link_to in card["links"]:
-                doc.append("links", {
-                    "type": "Link",
-                    "link_type": link_type,
-                    "link_to": link_to,
-                    "label": link_to,
-                    "is_query_report": 1 if link_type == "Report" else 0,
-                })
+        for link_type, link_to in card["links"]:
+            is_qr = 1 if link_type == "Report" else 0
+            frappe.db.sql("""
+                INSERT INTO `tabWorkspace Link`
+                (name, parent, parenttype, parentfield, idx,
+                 type, label, link_type, link_to, is_query_report,
+                 hidden, docstatus,
+                 owner, modified_by, modified, creation)
+                VALUES (%s, %s, 'Workspace', 'links', %s,
+                        'Link', %s, %s, %s, %s,
+                        0, 0,
+                        'Administrator', 'Administrator', %s, %s)
+            """, (f"{ws_name}-{idx}", ws_name, idx,
+                  link_to, link_type, link_to, is_qr, now, now))
+            idx += 1
 
-        doc.insert(ignore_permissions=True)
-        frappe.db.commit()
-        frappe.clear_cache()
-    finally:
-        frappe.flags.in_install = old_in_install
-        frappe.flags.in_migrate = old_in_migrate
+    frappe.db.commit()
+    frappe.clear_cache()
 
     count = frappe.db.count("Workspace Link", {"parent": ws_name})
-    if count == 0:
-        frappe.log_error(
-            f"Workspace created but has 0 links! Cards config: {len(cards)}",
-            "PP Workspace Debug"
-        )
+    print(f"Workspace '{ws_name}' created with {count} link entries!")
 
 
 def _get_cards_config():

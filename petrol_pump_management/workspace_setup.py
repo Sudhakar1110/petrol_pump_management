@@ -1,4 +1,4 @@
-"""Create workspace with all links.
+"""Create workspace with all links using pure SQL.
 Run: bench --site <site> execute petrol_pump_management.workspace_setup
 """
 import frappe
@@ -15,56 +15,59 @@ def execute():
 
     from petrol_pump_management.setup import _get_cards_config
     cards = _get_cards_config()
+    now = str(frappe.utils.now_datetime())
+
     card_names = [c["label"] for c in cards]
     content = json.dumps([
         {"type": "card", "data": {"card_name": cn, "col": 4}}
         for cn in card_names
     ])
 
-    # Bypass restrictions
-    old_in_install = frappe.flags.in_install
-    old_in_migrate = frappe.flags.in_migrate
-    frappe.flags.in_install = False
-    frappe.flags.in_migrate = False
+    # Insert workspace via pure SQL
+    frappe.db.sql("""
+        INSERT INTO `tabWorkspace`
+        (name, label, title, module, icon, indicator_color,
+         public, is_hidden, content, standard, docstatus,
+         owner, modified_by, modified, creation)
+        VALUES (%s, %s, %s, %s, %s, %s,
+                1, 0, %s, 1, 0,
+                'Administrator', 'Administrator', %s, %s)
+    """, (ws_name, ws_name, ws_name, "PP Management",
+          "octicon octicon-fuel", "orange", content, now, now))
 
-    try:
-        doc = frappe.get_doc({
-            "doctype": "Workspace",
-            "label": ws_name,
-            "title": ws_name,
-            "module": "PP Management",
-            "icon": "octicon octicon-fuel",
-            "indicator_color": "orange",
-            "public": 1,
-            "is_hidden": 0,
-            "content": content,
-            "type": "Workspace",
-        })
-        doc.flags.with_module = True
-        doc.flags.ignore_links = True
+    # Insert all links via pure SQL
+    idx = 1
+    for card in cards:
+        frappe.db.sql("""
+            INSERT INTO `tabWorkspace Link`
+            (name, parent, parenttype, parentfield, idx,
+             type, label, icon, link_count, hidden, docstatus,
+             owner, modified_by, modified, creation)
+            VALUES (%s, %s, 'Workspace', 'links', %s,
+                    'Card Break', %s, %s, %s, 0, 0,
+                    'Administrator', 'Administrator', %s, %s)
+        """, (f"{ws_name}-{idx}", ws_name, idx,
+              card["label"], card.get("icon", ""), len(card["links"]), now, now))
+        idx += 1
 
-        for card in cards:
-            doc.append("links", {
-                "type": "Card Break",
-                "label": card["label"],
-                "icon": card.get("icon", ""),
-                "link_count": len(card["links"]),
-            })
-            for link_type, link_to in card["links"]:
-                doc.append("links", {
-                    "type": "Link",
-                    "link_type": link_type,
-                    "link_to": link_to,
-                    "label": link_to,
-                    "is_query_report": 1 if link_type == "Report" else 0,
-                })
+        for link_type, link_to in card["links"]:
+            is_qr = 1 if link_type == "Report" else 0
+            frappe.db.sql("""
+                INSERT INTO `tabWorkspace Link`
+                (name, parent, parenttype, parentfield, idx,
+                 type, label, link_type, link_to, is_query_report,
+                 hidden, docstatus,
+                 owner, modified_by, modified, creation)
+                VALUES (%s, %s, 'Workspace', 'links', %s,
+                        'Link', %s, %s, %s, %s,
+                        0, 0,
+                        'Administrator', 'Administrator', %s, %s)
+            """, (f"{ws_name}-{idx}", ws_name, idx,
+                  link_to, link_type, link_to, is_qr, now, now))
+            idx += 1
 
-        doc.insert(ignore_permissions=True)
-        frappe.db.commit()
-        frappe.clear_cache()
-    finally:
-        frappe.flags.in_install = old_in_install
-        frappe.flags.in_migrate = old_in_migrate
+    frappe.db.commit()
+    frappe.clear_cache()
 
     count = frappe.db.count("Workspace Link", {"parent": ws_name})
-    print(f"Workspace '{ws_name}' created with {count} links!")
+    print(f"Workspace '{ws_name}' created with {count} link entries!")
