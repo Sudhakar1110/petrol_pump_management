@@ -7,23 +7,33 @@ def after_install():
     """Setup after app installation."""
     create_roles()
     import_fixtures()
-    fix_workspace_public()
+    fix_workspace()
     frappe.db.commit()
 
 
 def after_migrate():
     """Fix workspace after migrate."""
-    fix_workspace_public()
+    fix_workspace()
     frappe.db.commit()
 
 
-def fix_workspace_public():
-    """Force workspace to be public so it shows on desk."""
+def fix_workspace():
+    """Fix workspace visibility and clean up old entries."""
     frappe.reload_doctype("Workspace")
+    # Delete old workspace if it exists under a different name
+    for old_name in ["PP Management"]:
+        if frappe.db.exists("Workspace", old_name):
+            try:
+                frappe.delete_doc("Workspace", old_name, force=True, ignore_missing=True)
+            except Exception:
+                pass
+    # Force set public=1 on our workspace
     frappe.db.sql(
-        'UPDATE `tabWorkspace` SET public=1 WHERE name=%s',
+        'UPDATE `tabWorkspace` SET public=1, is_hidden=0 WHERE name=%s',
         ("Petrol Pump Management",)
     )
+    # Clear workspace cache
+    frappe.clear_cache()
 
 
 def create_roles():
