@@ -1,19 +1,20 @@
 {
-  "name": "PP Management",
-  "module_name": "PP Management",
-  "app_name": "petrol_pump_management",
-  "doctype": "Module Def",
-  "custom": 0,
-  "card_name": "PP Management",
-  "icon": "octicon octicon-fuel",
-  "color": "#f59e0b",
-  "description": "Petrol Pump / Fuel Station Management",
-  "labels": [
-    "Configuration|octicon octicon-gear",
-    "Operations|octicon octicon-list-ordered",
-    "Credit & Sales|octicon octicon-credit-card",
-    "Stock Management|octicon octicon-package",
-    "Reports|octicon octicon-graph"
-  ],
-  "privileges": []
+ "app_name": "petrol_pump_management",
+ "card_name": "PP Management",
+ "color": "#f59e0b",
+ "creation": "2026-09-01 00:00:00",
+ "custom": 0,
+ "description": "Petrol Pump / Fuel Station Management",
+ "docstatus": 0,
+ "doctype": "Module Def",
+ "icon": "octicon octicon-fuel",
+ "idx": 0,
+ "modified": "2026-09-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module_name": "PP Management",
+ "name": "PP Management",
+ "owner": "Administrator",
+ "restrict_to_domain": "",
+ "type": "module",
+ "index_web_pages_for_search": 1
 }

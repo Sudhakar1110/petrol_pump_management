@@ -24,5 +24,6 @@
       "fieldtype": "Date",
       "label": "To Date"
     }
-  ]
+  ],
+  "ref_doctype": "Bank Deposit"
 }

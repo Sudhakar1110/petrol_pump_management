@@ -21,5 +21,6 @@
       "fieldtype": "Date",
       "label": "To Date"
     }
-  ]
+  ],
+  "ref_doctype": "Fuel Sale"
 }

@@ -10,5 +10,6 @@
       "role": "System Manager"
     }
   ],
-  "filters": []
+  "filters": [],
+  "ref_doctype": "Fuel Price Master"
 }

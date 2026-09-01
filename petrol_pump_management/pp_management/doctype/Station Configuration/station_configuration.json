@@ -6,13 +6,22 @@
   "engine": "InnoDB",
   "custom": 0,
   "is_submittable": 0,
-  "autoname": "",
+  "autoname": "naming_series:",
   "title_field": "",
   "search_fields": "",
   "sort_field": "modified",
   "sort_order": "DESC",
   "track_changes": 1,
   "fields": [
+    {
+      "fieldname": "naming_series",
+      "fieldtype": "Select",
+      "label": "Naming Series",
+      "options": "STATION CONFIGURATION",
+      "reqd": 1,
+      "default": "STATION CONFIGURATION",
+      "set_only_once": 1
+    },
     {
       "fieldname": "station_name",
       "fieldtype": "Data",
@@ -109,5 +118,6 @@
       "submit": 0,
       "cancel": 0
     }
-  ]
+  ],
+  "naming_rule": "By \"Naming Series\" field"
 }
