@@ -1,2 +1,2 @@
-frappe
-erpnext
+# No pip dependencies needed - frappe and ERPNext are installed via bench
+# They are declared as required_apps in hooks.py

@@ -1,7 +1,8 @@
 from setuptools import setup, find_packages
 
 with open("requirements.txt") as f:
-    install_requires = f.read().strip().split("\n")
+    lines = f.read().strip().split("\n")
+    install_requires = [l.strip() for l in lines if l.strip() and not l.strip().startswith("#")]
 
 setup(
     name="petrol_pump_management",
