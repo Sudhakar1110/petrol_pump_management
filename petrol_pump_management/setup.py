@@ -11,18 +11,102 @@ def after_install():
 
 
 def after_migrate():
-    """Fix workspace after migrate."""
-    try:
-        frappe.db.sql(
-            "UPDATE `tabWorkspace` SET public=1, is_hidden=0 WHERE name=%s",
-            ("Petrol Pump Management",)
-        )
-    except Exception:
-        pass
-    try:
-        frappe.db.commit()
-    except Exception:
-        pass
+    """Fix workspace after migrate - create or update with all links."""
+    ensure_workspace()
+    frappe.db.commit()
+
+
+def ensure_workspace():
+    """Create or update workspace with all links using SQL."""
+    ws_name = "Petrol Pump Management"
+
+    # Check if workspace exists, if not create it
+    exists = frappe.db.sql(
+        "SELECT name FROM `tabWorkspace` WHERE name=%s", (ws_name,)
+    )
+
+    if not exists:
+        # Create workspace
+        now = str(frappe.utils.now_datetime())
+        frappe.db.sql("""
+            INSERT INTO `tabWorkspace`
+            (name, label, title, module, app, icon, indicator_color, public,
+             standard, is_hidden, custom, category, docstatus, owner,
+             modified_by, modified, creation)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, 1, 1, 0, 0, 'Module', 0,
+             'Administrator', 'Administrator', %s, %s)
+        """, (ws_name, ws_name, ws_name, "PP Management", "petrol_pump_management",
+              "fuel", "green", now, now))
+
+    # Delete any existing links
+    frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent=%s", (ws_name,))
+
+    # Build content
+    content = json.dumps([
+        {"id": "c1", "type": "card", "data": {"card_name": "Configuration", "col": 4}},
+        {"id": "c2", "type": "card", "data": {"card_name": "Operations", "col": 4}},
+        {"id": "c3", "type": "card", "data": {"card_name": "Credit & Sales", "col": 4}},
+        {"id": "c4", "type": "card", "data": {"card_name": "Finance & HR", "col": 4}},
+        {"id": "c5", "type": "card", "data": {"card_name": "Reports", "col": 4}},
+    ])
+
+    # Update workspace content and public flag
+    frappe.db.sql("""
+        UPDATE `tabWorkspace`
+        SET content=%s, public=1, is_hidden=0, standard=1, category='Module',
+            app='petrol_pump_management', icon='fuel', indicator_color='green'
+        WHERE name=%s
+    """, (content, ws_name))
+
+    # All links: (link_type, link_to, label, hidden, is_query_report)
+    links_data = [
+        ("Card Break", "", "Configuration", 0, 0),
+        ("Link", "Station Configuration", "Station Configuration", 0, 0),
+        ("Link", "Tank Master", "Tank Master", 0, 0),
+        ("Link", "Nozzle Master", "Nozzle Master", 0, 0),
+        ("Link", "Fuel Price Master", "Fuel Price Master", 0, 0),
+        ("Link", "Employee Master", "Employee Master", 0, 0),
+        ("Link", "Tank Dip Chart", "Tank Dip Chart", 0, 0),
+        ("Card Break", "", "Operations", 0, 0),
+        ("Link", "Shift", "Shift", 0, 0),
+        ("Link", "Shift Nozzle Allotment", "Shift Nozzle Allotment", 0, 0),
+        ("Link", "Fuel Sale", "Fuel Sale", 0, 0),
+        ("Link", "Meter Reading", "Meter Reading", 0, 0),
+        ("Link", "Daily Stock Register", "Daily Stock Register", 0, 0),
+        ("Link", "Stock Purchase Decantation", "Stock Purchase Decantation", 0, 0),
+        ("Link", "Trip Voucher", "Trip Voucher", 0, 0),
+        ("Link", "PP Supplier Master", "PP Supplier Master", 0, 0),
+        ("Card Break", "", "Credit & Sales", 0, 0),
+        ("Link", "PP Customer", "PP Customer", 0, 0),
+        ("Link", "Vehicle Master", "Vehicle Master", 0, 0),
+        ("Link", "Credit Sale Invoice", "Credit Sale Invoice", 0, 0),
+        ("Link", "Payment Receipt", "Payment Receipt", 0, 0),
+        ("Link", "Credit Limit Ledger", "Credit Limit Ledger", 0, 0),
+        ("Link", "ANPR Scan Log", "ANPR Scan Log", 0, 0),
+        ("Card Break", "", "Finance & HR", 0, 0),
+        ("Link", "Expense Entry", "Expense Entry", 0, 0),
+        ("Link", "Attendance Register", "Attendance Register", 0, 0),
+        ("Link", "Advance Amount", "Advance Amount", 0, 0),
+        ("Link", "Bank Deposit", "Bank Deposit", 0, 0),
+        ("Link", "Day Settlement", "Day Settlement", 0, 0),
+        ("Card Break", "", "Reports", 0, 0),
+        ("Link", "Daily Sales Summary", "Daily Sales Summary", 0, 1),
+        ("Link", "Shift Settlement Report", "Shift Settlement Report", 0, 1),
+        ("Link", "Stock Variation Report", "Stock Variation Report", 0, 1),
+        ("Link", "Credit Customer Ageing", "Credit Customer Ageing", 0, 1),
+        ("Link", "GST VAT Summary", "GST VAT Summary", 0, 1),
+    ]
+
+    for idx, (link_type, link_to, label, hidden, is_query_report) in enumerate(links_data):
+        link_name = f"{ws_name}-{idx}"
+        frappe.db.sql("""
+            INSERT INTO `tabWorkspace Link`
+            (name, parent, parenttype, parentfield, idx, link_type, link_to,
+             label, hidden, is_query_report, onboard, dependencies, link_count)
+            VALUES (%s, %s, 'Workspace', 'links', %s, %s, %s, %s, %s, %s, 0, '', 0)
+        """, (link_name, ws_name, idx + 1, link_type, link_to, label, hidden, is_query_report))
+
+    frappe.clear_cache()
 
 
 def create_roles():
