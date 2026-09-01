@@ -1,0 +1,100 @@
+{
+  "name": "Tank Master",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 0,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "tank_no",
+      "fieldtype": "Data",
+      "label": "Tank Number",
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "fuel_type",
+      "fieldtype": "Select",
+      "label": "Fuel Type",
+      "options": "Petrol\nDiesel\nPremium Petrol\nCNG\nLPG",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "capacity_litres",
+      "fieldtype": "Int",
+      "label": "Capacity (Litres)",
+      "reqd": 1
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "current_stock",
+      "fieldtype": "Currency",
+      "label": "Current Stock (Litres)",
+      "reqd": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "safe_stock_level",
+      "fieldtype": "Int",
+      "label": "Safe Stock Level"
+    },
+    {
+      "fieldname": "is_active",
+      "fieldtype": "Check",
+      "label": "Is Active",
+      "default": "1",
+      "reqd": 1
+    },
+    {
+      "fieldname": "dip_chart",
+      "fieldtype": "Table",
+      "label": "Dip Chart",
+      "options": "Tank Dip Chart"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 0,
+      "cancel": 0
+    },
+    {
+      "role": "Station Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 0,
+      "cancel": 0
+    },
+    {
+      "role": "Salesman DSM",
+      "permlevel": 0,
+      "read": 1,
+      "write": 0,
+      "create": 0,
+      "delete": 0,
+      "submit": 0,
+      "cancel": 0
+    }
+  ]
+}

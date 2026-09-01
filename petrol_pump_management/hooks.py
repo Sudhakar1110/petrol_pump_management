@@ -6,22 +6,8 @@ app_email = "markcom@bizaxl.com"
 app_license = "MIT"
 required_apps = ["frappe", "erpnext"]
 
-# After install
 after_install = "petrol_pump_management.setup.after_install"
 
-# Fixtures for export
-fixtures = [
-    {
-        "dt": "Custom Field",
-        "filters": [["module", "=", "Petrol Pump Management"]],
-    },
-    {
-        "dt": "Property Setter",
-        "filters": [["module", "=", "Petrol Pump Management"]],
-    },
-]
-
-# Jinja
 jinja = {
     "methods": [
         "petrol_pump_management.utils.get_fuel_rate",
@@ -29,7 +15,6 @@ jinja = {
     ],
 }
 
-# Scheduler Events
 scheduler_events = {
     "daily": [
         "petrol_pump_management.tasks.daily_stock_reconciliation",

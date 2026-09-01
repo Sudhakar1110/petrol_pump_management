@@ -1,0 +1,98 @@
+{
+  "name": "Vehicle Master",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 0,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "vehicle_number",
+      "fieldtype": "Data",
+      "label": "Vehicle Number",
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "vehicle_type",
+      "fieldtype": "Select",
+      "label": "Vehicle Type",
+      "options": "Two-wheeler\nCar\nCommercial\nTractor\nBus\nOther",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "label": "Credit Customer",
+      "options": "PP Customer",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "fuel_type_preference",
+      "fieldtype": "Select",
+      "label": "Fuel Preference",
+      "options": "Petrol\nDiesel\nPremium Petrol\nCNG\nLPG"
+    },
+    {
+      "fieldname": "anpr_tag_status",
+      "fieldtype": "Select",
+      "label": "ANPR Status",
+      "options": "Active\nInactive\nUnder Review",
+      "default": "Active",
+      "reqd": 1
+    },
+    {
+      "fieldname": "registered_on",
+      "fieldtype": "Date",
+      "label": "Registered On",
+      "reqd": 1,
+      "default": "Today"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Station Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 0,
+      "cancel": 0
+    },
+    {
+      "role": "Credit Accounts Officer",
+      "permlevel": 0,
+      "read": 1,
+      "write": 0,
+      "create": 0,
+      "delete": 0,
+      "submit": 0,
+      "cancel": 0
+    },
+    {
+      "role": "Salesman DSM",
+      "permlevel": 0,
+      "read": 1,
+      "write": 0,
+      "create": 0,
+      "delete": 0,
+      "submit": 0,
+      "cancel": 0
+    }
+  ]
+}

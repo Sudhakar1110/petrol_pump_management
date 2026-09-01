@@ -1,0 +1,114 @@
+{
+  "name": "Shift",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 1,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "shift_date",
+      "fieldtype": "Date",
+      "label": "Shift Date",
+      "reqd": 1,
+      "in_list_view": 1,
+      "default": "Today"
+    },
+    {
+      "fieldname": "salesman",
+      "fieldtype": "Link",
+      "label": "Salesman",
+      "options": "Employee Master",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Open\nClosed\nSettled",
+      "default": "Open",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "opening_cash",
+      "fieldtype": "Currency",
+      "label": "Opening Cash",
+      "reqd": 1
+    },
+    {
+      "fieldname": "closing_cash",
+      "fieldtype": "Currency",
+      "label": "Closing Cash"
+    },
+    {
+      "fieldname": "s_break_nozzles",
+      "fieldtype": "Section Break",
+      "label": "Nozzle Allotment"
+    },
+    {
+      "fieldname": "nozzles_allotted",
+      "fieldtype": "Table",
+      "label": "Nozzles Allotted",
+      "options": "Shift Nozzle Allotment"
+    },
+    {
+      "fieldname": "total_sale_amount",
+      "fieldtype": "Currency",
+      "label": "Total Sale",
+      "read_only": 1
+    },
+    {
+      "fieldname": "cash_collected",
+      "fieldtype": "Currency",
+      "label": "Cash Collected",
+      "read_only": 1
+    },
+    {
+      "fieldname": "card_upi_amount",
+      "fieldtype": "Currency",
+      "label": "Card/UPI",
+      "read_only": 1
+    },
+    {
+      "fieldname": "credit_amount",
+      "fieldtype": "Currency",
+      "label": "Credit",
+      "read_only": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Station Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 1
+    },
+    {
+      "role": "Salesman DSM",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 0,
+      "submit": 0,
+      "cancel": 0
+    }
+  ]
+}

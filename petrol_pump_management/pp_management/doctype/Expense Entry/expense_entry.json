@@ -1,0 +1,92 @@
+{
+  "name": "Expense Entry",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 1,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "expense_date",
+      "fieldtype": "Date",
+      "label": "Expense Date",
+      "reqd": 1,
+      "in_list_view": 1,
+      "default": "Today"
+    },
+    {
+      "fieldname": "expense_type",
+      "fieldtype": "Select",
+      "label": "Expense Type",
+      "options": "Electricity\nDiesel Purchase\nMaintenance\nSalary\nRent\nOffice Supplies\nMiscellaneous",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "amount",
+      "fieldtype": "Currency",
+      "label": "Amount",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "payment_method",
+      "fieldtype": "Select",
+      "label": "Payment Method",
+      "options": "Cash\nBank Transfer\nUPI\nCheque",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "description",
+      "fieldtype": "Small Text",
+      "label": "Description"
+    },
+    {
+      "fieldname": "reference_no",
+      "fieldtype": "Data",
+      "label": "Reference No"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Draft\nApproved\nRejected",
+      "default": "Draft",
+      "reqd": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Station Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 1
+    },
+    {
+      "role": "System Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 1
+    }
+  ]
+}

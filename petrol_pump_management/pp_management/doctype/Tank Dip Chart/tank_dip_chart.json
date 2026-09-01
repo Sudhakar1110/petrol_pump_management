@@ -1,0 +1,32 @@
+{
+  "name": "Tank Dip Chart",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 0,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "dip_cm",
+      "fieldtype": "Int",
+      "label": "Dip (CM)",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "stock_volume_litres",
+      "fieldtype": "Currency",
+      "label": "Stock Volume (Litres)",
+      "reqd": 1,
+      "in_list_view": 1
+    }
+  ],
+  "permissions": []
+}

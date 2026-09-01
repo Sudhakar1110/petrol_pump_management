@@ -1,0 +1,19 @@
+{
+  "name": "Customer Credit Portal",
+  "module": "PP Management",
+  "doctype": "Page",
+  "title": "Customer Credit Portal",
+  "icon": "octicon octicon-person",
+  "route": "customer-credit-portal",
+  "type": "page",
+  "script": "petrol_pump_management/pp_management/page/credit_portal/credit_portal.js",
+  "system_page": 0,
+  "roles": [
+    {
+      "role": "Credit Accounts Officer"
+    },
+    {
+      "role": "Recovery Officer"
+    }
+  ]
+}

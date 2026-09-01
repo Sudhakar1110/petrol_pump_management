@@ -1,0 +1,100 @@
+{
+  "name": "Day Settlement",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 1,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "settlement_date",
+      "fieldtype": "Date",
+      "label": "Settlement Date",
+      "reqd": 1,
+      "in_list_view": 1,
+      "default": "Today"
+    },
+    {
+      "fieldname": "total_meter_sales",
+      "fieldtype": "Currency",
+      "label": "Total Meter Sales",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "total_cash",
+      "fieldtype": "Currency",
+      "label": "Total Cash",
+      "read_only": 1
+    },
+    {
+      "fieldname": "total_card_upi",
+      "fieldtype": "Currency",
+      "label": "Card/UPI",
+      "read_only": 1
+    },
+    {
+      "fieldname": "total_credit",
+      "fieldtype": "Currency",
+      "label": "Credit",
+      "read_only": 1
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "opening_hand_cash",
+      "fieldtype": "Currency",
+      "label": "Opening Hand Cash"
+    },
+    {
+      "fieldname": "closing_hand_cash",
+      "fieldtype": "Currency",
+      "label": "Closing Hand Cash"
+    },
+    {
+      "fieldname": "cash_shortage",
+      "fieldtype": "Currency",
+      "label": "Cash Shortage",
+      "read_only": 1
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Draft\nSettled\nLocked",
+      "default": "Draft",
+      "reqd": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Station Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 0
+    },
+    {
+      "role": "System Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 0,
+      "delete": 0,
+      "submit": 1,
+      "cancel": 0
+    }
+  ]
+}

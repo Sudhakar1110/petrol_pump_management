@@ -1,0 +1,22 @@
+{
+  "name": "Petrol Pump Dashboard",
+  "module": "PP Management",
+  "doctype": "Page",
+  "title": "Petrol Pump Dashboard",
+  "icon": "octicon octicon-gear",
+  "route": "petrol-pump-dashboard",
+  "type": "page",
+  "script": "petrol_pump_management/pp_management/page/dashboard/dashboard.js",
+  "system_page": 0,
+  "roles": [
+    {
+      "role": "Station Manager"
+    },
+    {
+      "role": "System Manager"
+    },
+    {
+      "role": "Salesman DSM"
+    }
+  ]
+}

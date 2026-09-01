@@ -1,0 +1,25 @@
+{
+  "name": "Density Dip Variation",
+  "module": "PP Management",
+  "doctype": "Report",
+  "document_type": "Stock Purchase Decantation",
+  "report_type": "Script Report",
+  "is_standard": "Yes",
+  "roles": [
+    {
+      "role": "Station Manager"
+    }
+  ],
+  "filters": [
+    {
+      "fieldname": "from_date",
+      "fieldtype": "Date",
+      "label": "From Date"
+    },
+    {
+      "fieldname": "to_date",
+      "fieldtype": "Date",
+      "label": "To Date"
+    }
+  ]
+}

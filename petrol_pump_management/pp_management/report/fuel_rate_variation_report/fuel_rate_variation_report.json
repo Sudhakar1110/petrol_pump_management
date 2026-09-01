@@ -1,0 +1,14 @@
+{
+  "name": "Fuel Rate Variation Report",
+  "module": "PP Management",
+  "doctype": "Report",
+  "document_type": "Fuel Price Master",
+  "report_type": "Script Report",
+  "is_standard": "Yes",
+  "roles": [
+    {
+      "role": "System Manager"
+    }
+  ],
+  "filters": []
+}

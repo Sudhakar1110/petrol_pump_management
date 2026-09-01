@@ -1,0 +1,57 @@
+{
+  "name": "Shift Nozzle Allotment",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 0,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "nozzle",
+      "fieldtype": "Link",
+      "label": "Nozzle",
+      "options": "Nozzle Master",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "opening_reading",
+      "fieldtype": "Currency",
+      "label": "Opening Reading",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "closing_reading",
+      "fieldtype": "Currency",
+      "label": "Closing Reading",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "testing_qty",
+      "fieldtype": "Int",
+      "label": "Test Qty (Litres)"
+    },
+    {
+      "fieldname": "sale_qty",
+      "fieldtype": "Currency",
+      "label": "Sale Qty",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "total_sale_amount",
+      "fieldtype": "Currency",
+      "label": "Sale Amount",
+      "read_only": 1,
+      "in_list_view": 1
+    }
+  ],
+  "permissions": []
+}

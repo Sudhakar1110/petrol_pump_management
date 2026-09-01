@@ -1,0 +1,92 @@
+{
+  "name": "Stock Purchase Decantation",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 1,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "tanker_no",
+      "fieldtype": "Data",
+      "label": "Tanker No",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "tank",
+      "fieldtype": "Link",
+      "label": "Destination Tank",
+      "options": "Tank Master",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "fuel_type",
+      "fieldtype": "Data",
+      "label": "Fuel Type",
+      "read_only": 1
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "supplier",
+      "fieldtype": "Link",
+      "label": "Supplier",
+      "options": "PP Supplier Master"
+    },
+    {
+      "fieldname": "invoiced_qty",
+      "fieldtype": "Currency",
+      "label": "Invoiced Qty (Litres)",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "received_qty",
+      "fieldtype": "Currency",
+      "label": "Received Qty (Litres)",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "variation_pct",
+      "fieldtype": "Percent",
+      "label": "Variation %",
+      "read_only": 1
+    },
+    {
+      "fieldname": "density",
+      "fieldtype": "Currency",
+      "label": "Density",
+      "reqd": 1
+    },
+    {
+      "fieldname": "decantation_datetime",
+      "fieldtype": "Datetime",
+      "label": "Decantation DateTime",
+      "reqd": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Station Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 1
+    }
+  ]
+}

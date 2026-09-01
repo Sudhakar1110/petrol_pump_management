@@ -1,0 +1,91 @@
+{
+  "name": "Payment Receipt",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 1,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "receipt_no",
+      "fieldtype": "Data",
+      "label": "Receipt No",
+      "reqd": 1,
+      "unique": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "label": "Customer",
+      "options": "PP Customer",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "mode",
+      "fieldtype": "Select",
+      "label": "Payment Mode",
+      "options": "Cash\nBank Transfer\nSwipe\nUPI\nCheque",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "amount",
+      "fieldtype": "Currency",
+      "label": "Amount",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "reference_no",
+      "fieldtype": "Data",
+      "label": "Reference No"
+    },
+    {
+      "fieldname": "received_on",
+      "fieldtype": "Datetime",
+      "label": "Received On",
+      "reqd": 1
+    },
+    {
+      "fieldname": "invoices",
+      "fieldtype": "Table",
+      "label": "Against Invoices",
+      "options": "Payment Receipt Invoice"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Credit Accounts Officer",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 0,
+      "cancel": 0
+    },
+    {
+      "role": "Recovery Officer",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 0,
+      "submit": 0,
+      "cancel": 0
+    }
+  ]
+}

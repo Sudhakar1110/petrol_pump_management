@@ -1,0 +1,124 @@
+{
+  "name": "Credit Sale Invoice",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 1,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "invoice_no",
+      "fieldtype": "Data",
+      "label": "Invoice No",
+      "reqd": 1,
+      "unique": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "label": "Customer",
+      "options": "PP Customer",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "vehicle",
+      "fieldtype": "Link",
+      "label": "Vehicle",
+      "options": "Vehicle Master",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "fuel_sale",
+      "fieldtype": "Link",
+      "label": "Fuel Sale",
+      "options": "Fuel Sale",
+      "reqd": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "amount",
+      "fieldtype": "Currency",
+      "label": "Amount",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "due_date",
+      "fieldtype": "Date",
+      "label": "Due Date",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "interest_applicable",
+      "fieldtype": "Check",
+      "label": "Interest Applicable"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Unpaid\nPartially Paid\nPaid\nOverdue",
+      "default": "Unpaid",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "amount_paid",
+      "fieldtype": "Currency",
+      "label": "Amount Paid",
+      "read_only": 1
+    },
+    {
+      "fieldname": "balance_amount",
+      "fieldtype": "Currency",
+      "label": "Balance",
+      "read_only": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Credit Accounts Officer",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 1
+    },
+    {
+      "role": "Station Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 1
+    },
+    {
+      "role": "Recovery Officer",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 0,
+      "delete": 0,
+      "submit": 0,
+      "cancel": 0
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Swipe Digital Settlement",
+  "module": "PP Management",
+  "doctype": "Report",
+  "document_type": "Fuel Sale",
+  "report_type": "Script Report",
+  "is_standard": "Yes",
+  "roles": [
+    {
+      "role": "Station Manager"
+    },
+    {
+      "role": "System Manager"
+    }
+  ],
+  "filters": [
+    {
+      "fieldname": "from_date",
+      "fieldtype": "Date",
+      "label": "From Date"
+    },
+    {
+      "fieldname": "to_date",
+      "fieldtype": "Date",
+      "label": "To Date"
+    }
+  ]
+}

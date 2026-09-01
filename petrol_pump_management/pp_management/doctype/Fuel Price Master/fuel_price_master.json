@@ -1,0 +1,87 @@
+{
+  "name": "Fuel Price Master",
+  "module": "PP Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 0,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "fuel_type",
+      "fieldtype": "Select",
+      "label": "Fuel Type",
+      "options": "Petrol\nDiesel\nPremium Petrol\nCNG\nLPG",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "effective_from",
+      "fieldtype": "Datetime",
+      "label": "Effective From",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "rate_per_litre",
+      "fieldtype": "Currency",
+      "label": "Rate Per Litre",
+      "reqd": 1,
+      "in_list_view": 1,
+      "precision": 2
+    },
+    {
+      "fieldname": "cb1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "revised_by",
+      "fieldtype": "Link",
+      "label": "Revised By",
+      "options": "User",
+      "reqd": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "previous_rate",
+      "fieldtype": "Currency",
+      "label": "Previous Rate",
+      "read_only": 1
+    },
+    {
+      "fieldname": "is_active",
+      "fieldtype": "Check",
+      "label": "Is Active",
+      "default": "1",
+      "reqd": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 0,
+      "cancel": 0
+    },
+    {
+      "role": "Station Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 0,
+      "cancel": 0
+    }
+  ]
+}
