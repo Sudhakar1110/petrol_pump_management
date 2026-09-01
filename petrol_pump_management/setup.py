@@ -58,6 +58,7 @@ def _create_workspace():
             "type": "Workspace",
         })
         doc.flags.with_module = True
+        doc.flags.ignore_links = True
 
         for card in cards:
             doc.append("links", {
