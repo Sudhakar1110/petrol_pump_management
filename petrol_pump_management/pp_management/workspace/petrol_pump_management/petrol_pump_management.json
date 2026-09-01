@@ -1,7 +1,7 @@
 {
   "app": "petrol_pump_management",
   "charts": [],
-  "content": "[]",
+  "content": "[{\"id\":\"c1\",\"type\":\"card\",\"data\":{\"card_name\":\"Configuration\",\"col\":4}},{\"id\":\"c2\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations\",\"col\":4}},{\"id\":\"c3\",\"type\":\"card\",\"data\":{\"card_name\":\"Credit & Sales\",\"col\":4}},{\"id\":\"c4\",\"type\":\"card\",\"data\":{\"card_name\":\"Finance & HR\",\"col\":4}},{\"id\":\"c5\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
   "custom_blocks": [],
   "docstatus": 0,
   "doctype": "Workspace",
@@ -12,13 +12,332 @@
   "indicator_color": "orange",
   "is_hidden": 0,
   "label": "Petrol Pump Management",
-  "links": [],
+  "links": [
+    {
+      "description": "",
+      "hidden": 0,
+      "icon": "octicon octicon-gear",
+      "idx": 1,
+      "label": "Configuration",
+      "link_count": 6,
+      "type": "Card Break"
+    },
+    {
+      "hidden": 0,
+      "idx": 2,
+      "is_query_report": 0,
+      "label": "Station Configuration",
+      "link_to": "Station Configuration",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 3,
+      "is_query_report": 0,
+      "label": "Tank Master",
+      "link_to": "Tank Master",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 4,
+      "is_query_report": 0,
+      "label": "Nozzle Master",
+      "link_to": "Nozzle Master",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 5,
+      "is_query_report": 0,
+      "label": "Fuel Price Master",
+      "link_to": "Fuel Price Master",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 6,
+      "is_query_report": 0,
+      "label": "Employee Master",
+      "link_to": "Employee Master",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 7,
+      "is_query_report": 0,
+      "label": "Tank Dip Chart",
+      "link_to": "Tank Dip Chart",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "description": "",
+      "hidden": 0,
+      "icon": "octicon octicon-gear",
+      "idx": 8,
+      "label": "Operations",
+      "link_count": 8,
+      "type": "Card Break"
+    },
+    {
+      "hidden": 0,
+      "idx": 9,
+      "is_query_report": 0,
+      "label": "Shift",
+      "link_to": "Shift",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 10,
+      "is_query_report": 0,
+      "label": "Shift Nozzle Allotment",
+      "link_to": "Shift Nozzle Allotment",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 11,
+      "is_query_report": 0,
+      "label": "Fuel Sale",
+      "link_to": "Fuel Sale",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 12,
+      "is_query_report": 0,
+      "label": "Meter Reading",
+      "link_to": "Meter Reading",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 13,
+      "is_query_report": 0,
+      "label": "Daily Stock Register",
+      "link_to": "Daily Stock Register",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 14,
+      "is_query_report": 0,
+      "label": "Stock Purchase Decantation",
+      "link_to": "Stock Purchase Decantation",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 15,
+      "is_query_report": 0,
+      "label": "Trip Voucher",
+      "link_to": "Trip Voucher",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 16,
+      "is_query_report": 0,
+      "label": "PP Supplier Master",
+      "link_to": "PP Supplier Master",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "description": "",
+      "hidden": 0,
+      "icon": "octicon octicon-credit-card",
+      "idx": 17,
+      "label": "Credit & Sales",
+      "link_count": 6,
+      "type": "Card Break"
+    },
+    {
+      "hidden": 0,
+      "idx": 18,
+      "is_query_report": 0,
+      "label": "PP Customer",
+      "link_to": "PP Customer",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 19,
+      "is_query_report": 0,
+      "label": "Vehicle Master",
+      "link_to": "Vehicle Master",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 20,
+      "is_query_report": 0,
+      "label": "Credit Sale Invoice",
+      "link_to": "Credit Sale Invoice",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 21,
+      "is_query_report": 0,
+      "label": "Payment Receipt",
+      "link_to": "Payment Receipt",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 22,
+      "is_query_report": 0,
+      "label": "Credit Limit Ledger",
+      "link_to": "Credit Limit Ledger",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 23,
+      "is_query_report": 0,
+      "label": "ANPR Scan Log",
+      "link_to": "ANPR Scan Log",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "description": "",
+      "hidden": 0,
+      "icon": "octicon octicon-dollar",
+      "idx": 24,
+      "label": "Finance & HR",
+      "link_count": 5,
+      "type": "Card Break"
+    },
+    {
+      "hidden": 0,
+      "idx": 25,
+      "is_query_report": 0,
+      "label": "Expense Entry",
+      "link_to": "Expense Entry",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 26,
+      "is_query_report": 0,
+      "label": "Attendance Register",
+      "link_to": "Attendance Register",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 27,
+      "is_query_report": 0,
+      "label": "Advance Amount",
+      "link_to": "Advance Amount",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 28,
+      "is_query_report": 0,
+      "label": "Bank Deposit",
+      "link_to": "Bank Deposit",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 29,
+      "is_query_report": 0,
+      "label": "Day Settlement",
+      "link_to": "Day Settlement",
+      "link_type": "DocType",
+      "type": "Link"
+    },
+    {
+      "description": "",
+      "hidden": 0,
+      "icon": "octicon octicon-graph",
+      "idx": 30,
+      "label": "Reports",
+      "link_count": 5,
+      "type": "Card Break"
+    },
+    {
+      "hidden": 0,
+      "idx": 31,
+      "is_query_report": 1,
+      "label": "Daily Sales Summary",
+      "link_to": "Daily Sales Summary",
+      "link_type": "Report",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 32,
+      "is_query_report": 1,
+      "label": "Shift Settlement Report",
+      "link_to": "Shift Settlement Report",
+      "link_type": "Report",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 33,
+      "is_query_report": 1,
+      "label": "Stock Variation Report",
+      "link_to": "Stock Variation Report",
+      "link_type": "Report",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 34,
+      "is_query_report": 1,
+      "label": "Credit Customer Ageing",
+      "link_to": "Credit Customer Ageing",
+      "link_type": "Report",
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "idx": 35,
+      "is_query_report": 1,
+      "label": "GST VAT Summary",
+      "link_to": "GST VAT Summary",
+      "link_type": "Report",
+      "type": "Link"
+    }
+  ],
   "module": "PP Management",
+  "module_onboarding": "",
   "name": "Petrol Pump Management",
   "number_cards": [],
   "owner": "Administrator",
+  "parent_page": "",
   "public": 1,
   "quick_lists": [],
+  "restrict_to_domain": "",
   "roles": [],
   "sequence_id": 1.0,
   "shortcuts": [],
