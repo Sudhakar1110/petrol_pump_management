@@ -16,12 +16,14 @@ def get_customer_credit_balance(customer):
 
 @frappe.whitelist(allow_guest=True)
 def fix_workspace():
-    """Fix Petrol Pump Management workspace from browser.
+    """Fix Petrol Pump Management workspace using direct SQL (bypasses ORM).
 
-    Open this URL in your browser to fix the workspace:
+    Open this URL in your browser:
     /api/method/petrol_pump_management.api.fix_workspace
     """
+    import time
     ws_name = "Petrol Pump Management"
+    now = frappe.utils.now_datetime()
     results = []
 
     # Step 1: Delete ALL existing workspaces for this module
@@ -41,57 +43,16 @@ def fix_workspace():
         ("%Petrol%", "%PP%"),
         as_dict=True,
     )
-    for ws in other_ws:
-        if ws.name != ws_name:
-            frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", ws.name)
-            frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", ws.name)
-            results.append(f"Deleted stale: {ws.name}")
+    for ws_row in other_ws:
+        if ws_row.name != ws_name:
+            frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", ws_row.name)
+            frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", ws_row.name)
+            results.append(f"Deleted stale: {ws_row.name}")
 
     frappe.db.commit()
+    results.append("All stale entries cleaned.")
 
-    # Step 2: Create workspace with all links
-    links = [
-        {"type": "Card Break", "label": "Configuration", "icon": "octicon octicon-gear", "link_count": 6, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 1},
-        {"type": "Link", "link_type": "DocType", "link_to": "Station Configuration", "label": "Station Configuration", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 2},
-        {"type": "Link", "link_type": "DocType", "link_to": "Tank Master", "label": "Tank Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 3},
-        {"type": "Link", "link_type": "DocType", "link_to": "Nozzle Master", "label": "Nozzle Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 4},
-        {"type": "Link", "link_type": "DocType", "link_to": "Fuel Price Master", "label": "Fuel Price Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 5},
-        {"type": "Link", "link_type": "DocType", "link_to": "Employee Master", "label": "Employee Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 6},
-        {"type": "Link", "link_type": "DocType", "link_to": "Tank Dip Chart", "label": "Tank Dip Chart", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 7},
-
-        {"type": "Card Break", "label": "Operations", "icon": "octicon octicon-gear", "link_count": 8, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 8},
-        {"type": "Link", "link_type": "DocType", "link_to": "Shift", "label": "Shift", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 9},
-        {"type": "Link", "link_type": "DocType", "link_to": "Shift Nozzle Allotment", "label": "Shift Nozzle Allotment", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 10},
-        {"type": "Link", "link_type": "DocType", "link_to": "Fuel Sale", "label": "Fuel Sale", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 11},
-        {"type": "Link", "link_type": "DocType", "link_to": "Meter Reading", "label": "Meter Reading", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 12},
-        {"type": "Link", "link_type": "DocType", "link_to": "Daily Stock Register", "label": "Daily Stock Register", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 13},
-        {"type": "Link", "link_type": "DocType", "link_to": "Stock Purchase Decantation", "label": "Stock Purchase Decantation", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 14},
-        {"type": "Link", "link_type": "DocType", "link_to": "Trip Voucher", "label": "Trip Voucher", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 15},
-        {"type": "Link", "link_type": "DocType", "link_to": "PP Supplier Master", "label": "PP Supplier Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 16},
-
-        {"type": "Card Break", "label": "Credit & Sales", "icon": "octicon octicon-credit-card", "link_count": 6, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 17},
-        {"type": "Link", "link_type": "DocType", "link_to": "PP Customer", "label": "PP Customer", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 18},
-        {"type": "Link", "link_type": "DocType", "link_to": "Vehicle Master", "label": "Vehicle Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 19},
-        {"type": "Link", "link_type": "DocType", "link_to": "Credit Sale Invoice", "label": "Credit Sale Invoice", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 20},
-        {"type": "Link", "link_type": "DocType", "link_to": "Payment Receipt", "label": "Payment Receipt", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 21},
-        {"type": "Link", "link_type": "DocType", "link_to": "Credit Limit Ledger", "label": "Credit Limit Ledger", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 22},
-        {"type": "Link", "link_type": "DocType", "link_to": "ANPR Scan Log", "label": "ANPR Scan Log", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 23},
-
-        {"type": "Card Break", "label": "Finance & HR", "icon": "octicon octicon-dollar", "link_count": 5, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 24},
-        {"type": "Link", "link_type": "DocType", "link_to": "Expense Entry", "label": "Expense Entry", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 25},
-        {"type": "Link", "link_type": "DocType", "link_to": "Attendance Register", "label": "Attendance Register", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 26},
-        {"type": "Link", "link_type": "DocType", "link_to": "Advance Amount", "label": "Advance Amount", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 27},
-        {"type": "Link", "link_type": "DocType", "link_to": "Bank Deposit", "label": "Bank Deposit", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 28},
-        {"type": "Link", "link_type": "DocType", "link_to": "Day Settlement", "label": "Day Settlement", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 29},
-
-        {"type": "Card Break", "label": "Reports", "icon": "octicon octicon-graph", "link_count": 5, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 30},
-        {"type": "Link", "link_type": "Report", "link_to": "Daily Sales Summary", "label": "Daily Sales Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 31},
-        {"type": "Link", "link_type": "Report", "link_to": "Shift Settlement Report", "label": "Shift Settlement Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 32},
-        {"type": "Link", "link_type": "Report", "link_to": "Stock Variation Report", "label": "Stock Variation Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 33},
-        {"type": "Link", "link_type": "Report", "link_to": "Credit Customer Ageing", "label": "Credit Customer Ageing", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 34},
-        {"type": "Link", "link_type": "Report", "link_to": "GST VAT Summary", "label": "GST VAT Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 35},
-    ]
-
+    # Step 2: Create workspace parent via direct SQL
     content = json.dumps([
         {"type": "header", "data": {"text": "Your Shortcuts", "level": 4, "col": 12}},
         {"type": "spacer", "data": {"col": 12}},
@@ -111,33 +72,98 @@ def fix_workspace():
         {"type": "card", "data": {"card_name": "Reports", "col": 4}},
     ])
 
-    ws = frappe.get_doc({
-        "doctype": "Workspace",
-        "label": ws_name,
-        "title": ws_name,
-        "module": "PP Management",
-        "icon": "octicon octicon-fuel",
-        "indicator_color": "orange",
-        "public": 1,
-        "is_hidden": 0,
-        "content": content,
-        "links": links,
-    })
+    frappe.db.sql("""
+        INSERT INTO `tabWorkspace`
+        (name, creation, modified, owner, modified_by, docstatus, idx,
+         module, label, title, icon, indicator_color,
+         type, public, is_hidden, content)
+        VALUES
+        (%s, %s, %s, %s, %s, 0, 0,
+         %s, %s, %s, %s, %s,
+         'Workspace', 1, 0, %s)
+    """, (
+        ws_name, now, now, "Administrator", "Administrator",
+        "PP Management", ws_name, ws_name,
+        "octicon octicon-fuel", "orange",
+        content,
+    ))
+    results.append(f"Workspace '{ws_name}' parent created via SQL.")
 
-    ws.flags.with_module = True
-    ws.flags.ignore_links = True
-    ws.flags.ignore_validate = True
-    ws.flags.ignore_permissions = True
-    ws.flags.ignore_mandatory = True
-    ws.insert(ignore_permissions=True)
+    # Step 3: Insert all links via direct SQL
+    links_data = [
+        # Configuration Card
+        ("Card Break", "Configuration", "", "", 0, 0, 0, 0, 1),
+        ("Link", "Station Configuration", "DocType", "Station Configuration", 0, 0, 0, 0, 2),
+        ("Link", "Tank Master", "DocType", "Tank Master", 0, 0, 0, 0, 3),
+        ("Link", "Nozzle Master", "DocType", "Nozzle Master", 0, 0, 0, 0, 4),
+        ("Link", "Fuel Price Master", "DocType", "Fuel Price Master", 0, 0, 0, 0, 5),
+        ("Link", "Employee Master", "DocType", "Employee Master", 0, 0, 0, 0, 6),
+        ("Link", "Tank Dip Chart", "DocType", "Tank Dip Chart", 0, 0, 0, 0, 7),
+        # Operations Card
+        ("Card Break", "Operations", "", "", 0, 0, 0, 0, 8),
+        ("Link", "Shift", "DocType", "Shift", 0, 0, 0, 0, 9),
+        ("Link", "Shift Nozzle Allotment", "DocType", "Shift Nozzle Allotment", 0, 0, 0, 0, 10),
+        ("Link", "Fuel Sale", "DocType", "Fuel Sale", 0, 0, 0, 0, 11),
+        ("Link", "Meter Reading", "DocType", "Meter Reading", 0, 0, 0, 0, 12),
+        ("Link", "Daily Stock Register", "DocType", "Daily Stock Register", 0, 0, 0, 0, 13),
+        ("Link", "Stock Purchase Decantation", "DocType", "Stock Purchase Decantation", 0, 0, 0, 0, 14),
+        ("Link", "Trip Voucher", "DocType", "Trip Voucher", 0, 0, 0, 0, 15),
+        ("Link", "PP Supplier Master", "DocType", "PP Supplier Master", 0, 0, 0, 0, 16),
+        # Credit & Sales Card
+        ("Card Break", "Credit & Sales", "", "", 0, 0, 0, 0, 17),
+        ("Link", "PP Customer", "DocType", "PP Customer", 0, 0, 0, 0, 18),
+        ("Link", "Vehicle Master", "DocType", "Vehicle Master", 0, 0, 0, 0, 19),
+        ("Link", "Credit Sale Invoice", "DocType", "Credit Sale Invoice", 0, 0, 0, 0, 20),
+        ("Link", "Payment Receipt", "DocType", "Payment Receipt", 0, 0, 0, 0, 21),
+        ("Link", "Credit Limit Ledger", "DocType", "Credit Limit Ledger", 0, 0, 0, 0, 22),
+        ("Link", "ANPR Scan Log", "DocType", "ANPR Scan Log", 0, 0, 0, 0, 23),
+        # Finance & HR Card
+        ("Card Break", "Finance & HR", "", "", 0, 0, 0, 0, 24),
+        ("Link", "Expense Entry", "DocType", "Expense Entry", 0, 0, 0, 0, 25),
+        ("Link", "Attendance Register", "DocType", "Attendance Register", 0, 0, 0, 0, 26),
+        ("Link", "Advance Amount", "DocType", "Advance Amount", 0, 0, 0, 0, 27),
+        ("Link", "Bank Deposit", "DocType", "Bank Deposit", 0, 0, 0, 0, 28),
+        ("Link", "Day Settlement", "DocType", "Day Settlement", 0, 0, 0, 0, 29),
+        # Reports Card
+        ("Card Break", "Reports", "", "", 0, 0, 0, 0, 30),
+        ("Link", "Daily Sales Summary", "Report", "Daily Sales Summary", 0, 1, 0, 0, 31),
+        ("Link", "Shift Settlement Report", "Report", "Shift Settlement Report", 0, 1, 0, 0, 32),
+        ("Link", "Stock Variation Report", "Report", "Stock Variation Report", 0, 1, 0, 0, 33),
+        ("Link", "Credit Customer Ageing", "Report", "Credit Customer Ageing", 0, 1, 0, 0, 34),
+        ("Link", "GST VAT Summary", "Report", "GST VAT Summary", 0, 1, 0, 0, 35),
+    ]
+
+    card_count = 0
+    for ltype, label, link_type, link_to, hidden, is_query_report, onboard, dependencies, idx in links_data:
+        frappe.db.sql("""
+            INSERT INTO `tabWorkspace Link`
+            (name, creation, modified, owner, modified_by, parent, parentfield, parenttype, docstatus, idx,
+             type, label, link_type, link_to, hidden, is_query_report, onboard, dependencies, link_count, icon)
+            VALUES
+            (%s, %s, %s, %s, %s, %s, 'links', 'Workspace', 0, %s,
+             %s, %s, %s, %s, %s, %s, %s, %s, 0, %s)
+        """, (
+            frappe.utils.cstr(frappe.utils.random_string(8)),
+            now, now, "Administrator", "Administrator",
+            ws_name, idx,
+            ltype, label, link_type, link_to, hidden, is_query_report,
+            onboard, dependencies, "octicon octicon-gear" if ltype == "Card Break" and "Configuration" in label else
+            "octicon octicon-gear" if ltype == "Card Break" and "Operations" in label else
+            "octicon octicon-credit-card" if ltype == "Card Break" and "Credit" in label else
+            "octicon octicon-dollar" if ltype == "Card Break" and "Finance" in label else
+            "octicon octicon-graph" if ltype == "Card Break" and "Reports" in label else "",
+        ))
+        card_count += 1
+
     frappe.db.commit()
-    frappe.clear_cache()
+    results.append(f"Inserted {card_count} links via direct SQL.")
 
-    results.append(f"Workspace '{ws.name}' created!")
-
-    # Verify
+    # Step 4: Verify
     count = frappe.db.count("Workspace Link", {"parent": ws_name})
-    results.append(f"Links count: {count}")
+    ws_exists = frappe.db.exists("Workspace", ws_name)
+    results.append(f"Verification - Workspace exists: {ws_exists}, Links count: {count}")
+
+    frappe.clear_cache()
 
     return {
         "success": count > 0,
