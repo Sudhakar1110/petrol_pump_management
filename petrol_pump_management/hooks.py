@@ -9,6 +9,7 @@ required_apps = ["frappe", "erpnext"]
 # Install
 # ------------------
 after_install = "petrol_pump_management.setup.after_install"
+after_migrate = "petrol_pump_management.setup.after_migrate"
 
 # Fixtures
 # ------------------
