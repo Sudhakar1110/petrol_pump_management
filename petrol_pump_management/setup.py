@@ -18,7 +18,8 @@ def after_migrate():
 
 
 def create_workspace():
-    """Create workspace programmatically."""
+    """Create workspace using raw SQL for reliability."""
+
     # Delete old workspaces
     for old_name in ["PP Management", "Petrol Pump Management"]:
         if frappe.db.exists("Workspace", old_name):
@@ -28,42 +29,45 @@ def create_workspace():
                 pass
     frappe.db.commit()
 
+    now = frappe.utils.now_datetime()
+    now_str = str(now)
+
     links = [
-        {"hidden": 0, "is_query_report": 0, "label": "Configuration", "link_count": 0, "onboard": 0, "type": "Card Break"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Station Configuration", "link_count": 0, "link_to": "Station Configuration", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Tank Master", "link_count": 0, "link_to": "Tank Master", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Nozzle Master", "link_count": 0, "link_to": "Nozzle Master", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Fuel Price Master", "link_count": 0, "link_to": "Fuel Price Master", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Employee Master", "link_count": 0, "link_to": "Employee Master", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Tank Dip Chart", "link_count": 0, "link_to": "Tank Dip Chart", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"hidden": 0, "is_query_report": 0, "label": "Operations", "link_count": 0, "onboard": 0, "type": "Card Break"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Shift", "link_count": 0, "link_to": "Shift", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Shift Nozzle Allotment", "link_count": 0, "link_to": "Shift Nozzle Allotment", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Fuel Sale", "link_count": 0, "link_to": "Fuel Sale", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Meter Reading", "link_count": 0, "link_to": "Meter Reading", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Daily Stock Register", "link_count": 0, "link_to": "Daily Stock Register", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Stock Purchase Decantation", "link_count": 0, "link_to": "Stock Purchase Decantation", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Trip Voucher", "link_count": 0, "link_to": "Trip Voucher", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "PP Supplier Master", "link_count": 0, "link_to": "PP Supplier Master", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"hidden": 0, "is_query_report": 0, "label": "Credit & Sales", "link_count": 0, "onboard": 0, "type": "Card Break"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "PP Customer", "link_count": 0, "link_to": "PP Customer", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Vehicle Master", "link_count": 0, "link_to": "Vehicle Master", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Credit Sale Invoice", "link_count": 0, "link_to": "Credit Sale Invoice", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Payment Receipt", "link_count": 0, "link_to": "Payment Receipt", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Credit Limit Ledger", "link_count": 0, "link_to": "Credit Limit Ledger", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "ANPR Scan Log", "link_count": 0, "link_to": "ANPR Scan Log", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"hidden": 0, "is_query_report": 0, "label": "Finance & HR", "link_count": 0, "onboard": 0, "type": "Card Break"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Expense Entry", "link_count": 0, "link_to": "Expense Entry", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Attendance Register", "link_count": 0, "link_to": "Attendance Register", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Advance Amount", "link_count": 0, "link_to": "Advance Amount", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Bank Deposit", "link_count": 0, "link_to": "Bank Deposit", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Day Settlement", "link_count": 0, "link_to": "Day Settlement", "link_type": "DocType", "onboard": 0, "type": "Link"},
-        {"hidden": 0, "is_query_report": 0, "label": "Reports", "link_count": 0, "onboard": 0, "type": "Card Break"},
-        {"hidden": 0, "is_query_report": 1, "label": "Daily Sales Summary", "link_count": 0, "link_to": "Daily Sales Summary", "link_type": "Report", "onboard": 0, "type": "Link"},
-        {"hidden": 0, "is_query_report": 1, "label": "Shift Settlement Report", "link_count": 0, "link_to": "Shift Settlement Report", "link_type": "Report", "onboard": 0, "type": "Link"},
-        {"hidden": 0, "is_query_report": 1, "label": "Stock Variation Report", "link_count": 0, "link_to": "Stock Variation Report", "link_type": "Report", "onboard": 0, "type": "Link"},
-        {"hidden": 0, "is_query_report": 1, "label": "Credit Customer Ageing", "link_count": 0, "link_to": "Credit Customer Ageing", "link_type": "Report", "onboard": 0, "type": "Link"},
-        {"hidden": 0, "is_query_report": 1, "label": "GST VAT Summary", "link_count": 0, "link_to": "GST VAT Summary", "link_type": "Report", "onboard": 0, "type": "Link"},
+        ("Card Break", "", "Configuration", "", 0, 0, 0),
+        ("Link", "DocType", "Station Configuration", "Station Configuration", 0, 0, 0),
+        ("Link", "DocType", "Tank Master", "Tank Master", 0, 0, 0),
+        ("Link", "DocType", "Nozzle Master", "Nozzle Master", 0, 0, 0),
+        ("Link", "DocType", "Fuel Price Master", "Fuel Price Master", 0, 0, 0),
+        ("Link", "DocType", "Employee Master", "Employee Master", 0, 0, 0),
+        ("Link", "DocType", "Tank Dip Chart", "Tank Dip Chart", 0, 0, 0),
+        ("Card Break", "", "Operations", "", 0, 0, 0),
+        ("Link", "DocType", "Shift", "Shift", 0, 0, 0),
+        ("Link", "DocType", "Shift Nozzle Allotment", "Shift Nozzle Allotment", 0, 0, 0),
+        ("Link", "DocType", "Fuel Sale", "Fuel Sale", 0, 0, 0),
+        ("Link", "DocType", "Meter Reading", "Meter Reading", 0, 0, 0),
+        ("Link", "DocType", "Daily Stock Register", "Daily Stock Register", 0, 0, 0),
+        ("Link", "DocType", "Stock Purchase Decantation", "Stock Purchase Decantation", 0, 0, 0),
+        ("Link", "DocType", "Trip Voucher", "Trip Voucher", 0, 0, 0),
+        ("Link", "DocType", "PP Supplier Master", "PP Supplier Master", 0, 0, 0),
+        ("Card Break", "", "Credit & Sales", "", 0, 0, 0),
+        ("Link", "DocType", "PP Customer", "PP Customer", 0, 0, 0),
+        ("Link", "DocType", "Vehicle Master", "Vehicle Master", 0, 0, 0),
+        ("Link", "DocType", "Credit Sale Invoice", "Credit Sale Invoice", 0, 0, 0),
+        ("Link", "DocType", "Payment Receipt", "Payment Receipt", 0, 0, 0),
+        ("Link", "DocType", "Credit Limit Ledger", "Credit Limit Ledger", 0, 0, 0),
+        ("Link", "DocType", "ANPR Scan Log", "ANPR Scan Log", 0, 0, 0),
+        ("Card Break", "", "Finance & HR", "", 0, 0, 0),
+        ("Link", "DocType", "Expense Entry", "Expense Entry", 0, 0, 0),
+        ("Link", "DocType", "Attendance Register", "Attendance Register", 0, 0, 0),
+        ("Link", "DocType", "Advance Amount", "Advance Amount", 0, 0, 0),
+        ("Link", "DocType", "Bank Deposit", "Bank Deposit", 0, 0, 0),
+        ("Link", "DocType", "Day Settlement", "Day Settlement", 0, 0, 0),
+        ("Card Break", "", "Reports", "", 0, 0, 0),
+        ("Link", "Report", "Daily Sales Summary", "Daily Sales Summary", 0, 1, 0),
+        ("Link", "Report", "Shift Settlement Report", "Shift Settlement Report", 0, 1, 0),
+        ("Link", "Report", "Stock Variation Report", "Stock Variation Report", 0, 1, 0),
+        ("Link", "Report", "Credit Customer Ageing", "Credit Customer Ageing", 0, 1, 0),
+        ("Link", "Report", "GST VAT Summary", "GST VAT Summary", 0, 1, 0),
     ]
 
     content = json.dumps([
@@ -74,34 +78,31 @@ def create_workspace():
         {"id": "c5", "type": "card", "data": {"card_name": "Reports", "col": 4}},
     ])
 
-    try:
-        ws = frappe.get_doc({
-            "doctype": "Workspace",
-            "name": "Petrol Pump Management",
-            "label": "Petrol Pump Management",
-            "title": "Petrol Pump Management",
-            "module": "PP Management",
-            "app": "petrol_pump_management",
-            "icon": "fuel",
-            "indicator_color": "green",
-            "public": 1,
-            "standard": 1,
-            "is_hidden": 0,
-            "custom": 0,
-            "category": "Module",
-            "links": links,
-            "content": content,
-            "charts": [],
-            "number_cards": [],
-            "shortcuts": [],
-            "roles": [],
-            "sidebar_items": [],
-            "custom_blocks": [],
-        })
-        ws.insert(ignore_permissions=True)
-        frappe.db.commit()
-    except Exception as e:
-        print("Error creating workspace: " + str(e))
+    ws_name = "Petrol Pump Management"
+
+    # Insert workspace
+    frappe.db.sql("""
+        INSERT INTO `tabWorkspace`
+        (name, label, title, module, app, icon, indicator_color, public, standard,
+         is_hidden, custom, category, content, docstatus, owner, modified_by,
+         modified, creation)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 0, 'Administrator',
+         'Administrator', %s, %s)
+    """, (ws_name, ws_name, ws_name, "PP Management", "petrol_pump_management",
+          "fuel", "green", 1, 1, 0, 0, "Module", content, now_str, now_str))
+
+    # Insert links as child records
+    for idx, (link_type, link_type_val, label, link_to, hidden, is_query_report, onboard) in enumerate(links):
+        link_name = f"{ws_name}-{idx}"
+        frappe.db.sql("""
+            INSERT INTO `tabWorkspace Link`
+            (name, parent, parenttype, parentfield, idx, link_type, link_to,
+             label, hidden, is_query_report, onboard, dependencies, link_count)
+            VALUES (%s, %s, 'Workspace', 'links', %s, %s, %s, %s, %s, %s, %s, '', 0)
+        """, (link_name, ws_name, idx + 1, link_type, link_to, label, hidden, is_query_report, onboard))
+
+    frappe.db.commit()
+    frappe.clear_cache()
 
 
 def fix_workspace():
