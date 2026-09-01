@@ -1,0 +1,45 @@
+{
+  "name": "Payment Receipt Invoice",
+  "module": "Petrol Pump Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 0,
+  "autoname": "",
+  "title_field": "",
+  "search_fields": "",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 0,
+  "allow_rename": 0,
+  "is_tree": 0,
+  "is_calendar_and_gantt": 0,
+  "editable_grid": 0,
+  "max_attachments": 0,
+  "fields": [
+    {
+      "fieldname": "credit_sale_invoice",
+      "fieldtype": "Link",
+      "label": "Credit Sale Invoice",
+      "options": "Credit Sale Invoice",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "amount",
+      "fieldtype": "Currency",
+      "label": "Amount",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "due_date",
+      "fieldtype": "Date",
+      "label": "Due Date",
+      "read_only": 1,
+      "in_list_view": 1
+    }
+  ],
+  "permissions": []
+}

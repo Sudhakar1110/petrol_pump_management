@@ -1,0 +1,167 @@
+{
+  "name": "PP Customer",
+  "module": "Petrol Pump Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 0,
+  "autoname": "",
+  "title_field": "full_name",
+  "search_fields": "full_name,mobile,customer_type",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "allow_rename": 0,
+  "is_tree": 0,
+  "is_calendar_and_gantt": 0,
+  "editable_grid": 0,
+  "max_attachments": 0,
+  "fields": [
+    {
+      "fieldname": "customer_type",
+      "fieldtype": "Select",
+      "label": "Customer Type",
+      "options": "Individual\nProprietary\nFleet\nCorporate",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "full_name",
+      "fieldtype": "Data",
+      "label": "Full Name",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "mobile",
+      "fieldtype": "Data",
+      "label": "Mobile Number",
+      "options": "Phone",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "credit_limit",
+      "fieldtype": "Currency",
+      "label": "Credit Limit",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "credit_points",
+      "fieldtype": "Int",
+      "label": "Credit Points",
+      "default": "0"
+    },
+    {
+      "fieldname": "risk_category",
+      "fieldtype": "Select",
+      "label": "Risk Category",
+      "options": "Low\nMedium\nHigh",
+      "reqd": 1,
+      "default": "Low",
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "branch",
+      "fieldtype": "Link",
+      "label": "Branch",
+      "options": "Station Configuration"
+    },
+    {
+      "fieldname": "is_blocked",
+      "fieldtype": "Check",
+      "label": "Is Blocked"
+    },
+    {
+      "fieldname": "section_break_address",
+      "fieldtype": "Section Break",
+      "label": "Address & GST"
+    },
+    {
+      "fieldname": "organization_name",
+      "fieldtype": "Data",
+      "label": "Organization Name"
+    },
+    {
+      "fieldname": "representation_name",
+      "fieldtype": "Data",
+      "label": "Contact Person"
+    },
+    {
+      "fieldname": "email",
+      "fieldtype": "Data",
+      "label": "Email",
+      "options": "Email"
+    },
+    {
+      "fieldname": "gst_number",
+      "fieldtype": "Data",
+      "label": "GST Number"
+    },
+    {
+      "fieldname": "address",
+      "fieldtype": "Small Text",
+      "label": "Address"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Credit Accounts Officer",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 0,
+      "cancel": 0,
+      "amend": 0,
+      "report": 0,
+      "export": 0,
+      "import": 0,
+      "print": 0,
+      "email": 0,
+      "share": 0
+    },
+    {
+      "role": "Recovery Officer",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 0,
+      "delete": 0,
+      "submit": 0,
+      "cancel": 0,
+      "amend": 0,
+      "report": 0,
+      "export": 0,
+      "import": 0,
+      "print": 0,
+      "email": 0,
+      "share": 0
+    },
+    {
+      "role": "Station Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 0,
+      "cancel": 0,
+      "amend": 0,
+      "report": 0,
+      "export": 0,
+      "import": 0,
+      "print": 0,
+      "email": 0,
+      "share": 0
+    }
+  ]
+}

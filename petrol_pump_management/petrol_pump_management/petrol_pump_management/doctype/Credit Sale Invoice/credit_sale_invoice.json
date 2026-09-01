@@ -1,0 +1,164 @@
+{
+  "name": "Credit Sale Invoice",
+  "module": "Petrol Pump Management",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "custom": 0,
+  "is_submittable": 1,
+  "autoname": "",
+  "title_field": "invoice_no",
+  "search_fields": "invoice_no,customer,vehicle",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "track_changes": 1,
+  "allow_rename": 0,
+  "is_tree": 0,
+  "is_calendar_and_gantt": 0,
+  "editable_grid": 0,
+  "max_attachments": 0,
+  "fields": [
+    {
+      "fieldname": "invoice_no",
+      "fieldtype": "Data",
+      "label": "Invoice No",
+      "reqd": 1,
+      "read_only": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "label": "Customer",
+      "options": "PP Customer",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "vehicle",
+      "fieldtype": "Link",
+      "label": "Vehicle",
+      "options": "Vehicle Master",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "fuel_sale",
+      "fieldtype": "Link",
+      "label": "Fuel Sale",
+      "options": "Fuel Sale",
+      "reqd": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "amount",
+      "fieldtype": "Currency",
+      "label": "Amount",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "due_date",
+      "fieldtype": "Date",
+      "label": "Due Date",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "interest_applicable",
+      "fieldtype": "Check",
+      "label": "Interest Applicable"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Unpaid\nPartially Paid\nPaid\nOverdue",
+      "reqd": 1,
+      "default": "Unpaid",
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "section_break_payment",
+      "fieldtype": "Section Break",
+      "label": "Payment Details",
+      "depends_on": "eval:doc.docstatus==1"
+    },
+    {
+      "fieldname": "amount_paid",
+      "fieldtype": "Currency",
+      "label": "Amount Paid",
+      "read_only": 1
+    },
+    {
+      "fieldname": "balance_amount",
+      "fieldtype": "Currency",
+      "label": "Balance Amount",
+      "read_only": 1
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "Notes"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Credit Accounts Officer",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 0,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 0,
+      "report": 1,
+      "export": 0,
+      "import": 0,
+      "print": 0,
+      "email": 0,
+      "share": 0
+    },
+    {
+      "role": "Station Manager",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 0,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 0,
+      "report": 0,
+      "export": 0,
+      "import": 0,
+      "print": 0,
+      "email": 0,
+      "share": 0
+    },
+    {
+      "role": "Recovery Officer",
+      "permlevel": 0,
+      "read": 1,
+      "write": 1,
+      "create": 0,
+      "delete": 0,
+      "submit": 0,
+      "cancel": 0,
+      "amend": 0,
+      "report": 0,
+      "export": 0,
+      "import": 0,
+      "print": 0,
+      "email": 0,
+      "share": 0
+    }
+  ]
+}

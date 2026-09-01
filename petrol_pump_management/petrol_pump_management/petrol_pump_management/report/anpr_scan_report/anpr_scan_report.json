@@ -1,0 +1,28 @@
+{
+  "name": "ANPR Scan Report",
+  "module": "Petrol Pump Management",
+  "doctype": "Report",
+  "document_type": "ANPR Scan Log",
+  "report_type": "Script Report",
+  "is_standard": "Yes",
+  "roles": [
+    {
+      "role": "System Manager"
+    },
+    {
+      "role": "Credit Accounts Officer"
+    }
+  ],
+  "filters": [
+    {
+      "fieldname": "from_date",
+      "fieldtype": "Date",
+      "label": "From Date"
+    },
+    {
+      "fieldname": "to_date",
+      "fieldtype": "Date",
+      "label": "To Date"
+    }
+  ]
+}

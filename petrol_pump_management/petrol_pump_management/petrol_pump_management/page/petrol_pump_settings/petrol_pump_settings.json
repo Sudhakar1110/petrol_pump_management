@@ -1,0 +1,15 @@
+{
+  "name": "Petrol Pump Settings",
+  "module": "Petrol Pump Management",
+  "doctype": "Page",
+  "title": "Petrol Pump Settings",
+  "icon": "octicon octicon-tools",
+  "route": "petrol-pump-settings",
+  "type": "page",
+  "script": "petrol_pump_management/petrol_pump_management/page/petrol_pump_settings/petrol_pump_settings.js",
+  "system_page": 0,
+  "roles": [
+    {"role": "Station Manager"},
+    {"role": "System Manager"}
+  ]
+}
