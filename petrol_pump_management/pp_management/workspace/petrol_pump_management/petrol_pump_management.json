@@ -1,7 +1,7 @@
 {
   "app": "petrol_pump_management",
   "charts": [],
-  "content": "[{\"id\": \"hdr1\", \"type\": \"header\", \"data\": {\"text\": \"Your Shortcuts\", \"level\": 4, \"col\": 12}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Station Configuration\", \"col\": 4}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Fuel Sale\", \"col\": 4}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Fuel Price Master\", \"col\": 4}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cd1\", \"type\": \"card\", \"data\": {\"card_name\": \"Configuration\", \"col\": 4}}, {\"id\": \"cd2\", \"type\": \"card\", \"data\": {\"card_name\": \"Operations\", \"col\": 4}}, {\"id\": \"cd3\", \"type\": \"card\", \"data\": {\"card_name\": \"Credit & Sales\", \"col\": 4}}, {\"id\": \"cd4\", \"type\": \"card\", \"data\": {\"card_name\": \"Finance & HR\", \"col\": 4}}, {\"id\": \"cd5\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}]",
+  "content": "",
   "custom_blocks": [],
   "docstatus": 0,
   "doctype": "Workspace",
@@ -61,11 +61,7 @@
   "quick_lists": [],
   "roles": [],
   "sequence_id": 1.0,
-  "shortcuts": [
-    {"docview": "Form", "doctype": "Station Configuration", "label": "Station Configuration", "type": "Shortcut"},
-    {"docview": "Form", "doctype": "Fuel Sale", "label": "Fuel Sale", "type": "Shortcut"},
-    {"docview": "Form", "doctype": "Fuel Price Master", "label": "Fuel Price Master", "type": "Shortcut"}
-  ],
+  "shortcuts": [],
   "sidebar_items": [],
   "standard": 1,
   "title": "Petrol Pump Management",
