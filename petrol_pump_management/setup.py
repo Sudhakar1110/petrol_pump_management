@@ -8,27 +8,35 @@ def after_install():
     create_roles()
     import_fixtures()
     frappe.db.commit()
-    _create_workspace()
 
 
 def after_migrate():
-    """Ensure workspace exists after migration."""
-    _create_workspace()
+    """Ensure workspace has links after migration."""
+    _ensure_workspace_links()
 
 
-def _create_workspace():
-    """Create workspace with links using pure SQL for both parent and children."""
+def _ensure_workspace_links():
+    """Find or create the workspace and ensure it has all card links."""
     ws_name = "Petrol Pump Management"
 
-    # Skip if already done
-    if frappe.db.exists("Workspace", ws_name):
-        count = frappe.db.count("Workspace Link", {"parent": ws_name})
+    # Find existing workspace - could be "PP Management" or "Petrol Pump Management"
+    existing = frappe.db.get_value("Workspace", {"module": "PP Management"}, "name")
+    if not existing:
+        existing = frappe.db.get_value("Workspace", ws_name, "name")
+
+    if existing:
+        count = frappe.db.count("Workspace Link", {"parent": existing})
         if count > 0:
             return
+        # Workspace exists but empty - delete and recreate
+        frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", existing)
+        frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", existing)
+        frappe.db.commit()
 
-    # Clean up
-    frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent LIKE '%%Petrol Pump%%'")
-    frappe.db.sql("DELETE FROM `tabWorkspace` WHERE module = 'PP Management'")
+    # Clean up ALL workspaces for this module
+    for name in frappe.db.get_all("Workspace", filters={"module": "PP Management"}, pluck="name"):
+        frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", name)
+        frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", name)
     frappe.db.commit()
 
     now = str(frappe.utils.now_datetime())
@@ -40,54 +48,57 @@ def _create_workspace():
         for cn in card_names
     ])
 
-    # Step 1: Insert workspace via pure SQL
-    frappe.db.sql("""
-        INSERT INTO `tabWorkspace`
-        (name, label, title, module, icon, indicator_color,
-         public, is_hidden, content, standard, docstatus,
-         owner, modified_by, modified, creation)
-        VALUES (%s, %s, %s, %s, %s, %s,
-                1, 0, %s, 1, 0,
-                'Administrator', 'Administrator', %s, %s)
-    """, (ws_name, ws_name, ws_name, "PP Management",
-          "octicon octicon-fuel", "orange", content, now, now))
+    # Create workspace using Frappe ORM (with flags to bypass restrictions)
+    old_install = frappe.flags.in_install
+    old_migrate = frappe.flags.in_migrate
+    frappe.flags.in_install = False
+    frappe.flags.in_migrate = False
 
-    # Step 2: Insert ALL links via pure SQL
-    idx = 1
-    for card in cards:
-        frappe.db.sql("""
-            INSERT INTO `tabWorkspace Link`
-            (name, parent, parenttype, parentfield, idx,
-             type, label, icon, link_count, hidden, docstatus,
-             owner, modified_by, modified, creation)
-            VALUES (%s, %s, 'Workspace', 'links', %s,
-                    'Card Break', %s, %s, %s, 0, 0,
-                    'Administrator', 'Administrator', %s, %s)
-        """, (f"{ws_name}-{idx}", ws_name, idx,
-              card["label"], card.get("icon", ""), len(card["links"]), now, now))
-        idx += 1
+    try:
+        ws = frappe.get_doc({
+            "doctype": "Workspace",
+            "label": ws_name,
+            "title": ws_name,
+            "module": "PP Management",
+            "icon": "octicon octicon-fuel",
+            "indicator_color": "orange",
+            "public": 1,
+            "is_hidden": 0,
+            "content": content,
+            "type": "Workspace",
+        })
+        ws.flags.with_module = True
+        ws.flags.ignore_links = True
+        ws.flags.ignore_validate = True
 
-        for link_type, link_to in card["links"]:
-            is_qr = 1 if link_type == "Report" else 0
-            frappe.db.sql("""
-                INSERT INTO `tabWorkspace Link`
-                (name, parent, parenttype, parentfield, idx,
-                 type, label, link_type, link_to, is_query_report,
-                 hidden, docstatus,
-                 owner, modified_by, modified, creation)
-                VALUES (%s, %s, 'Workspace', 'links', %s,
-                        'Link', %s, %s, %s, %s,
-                        0, 0,
-                        'Administrator', 'Administrator', %s, %s)
-            """, (f"{ws_name}-{idx}", ws_name, idx,
-                  link_to, link_type, link_to, is_qr, now, now))
-            idx += 1
+        for card in cards:
+            ws.append("links", {
+                "type": "Card Break",
+                "label": card["label"],
+                "icon": card.get("icon", ""),
+                "link_count": len(card["links"]),
+            })
+            for link_type, link_to in card["links"]:
+                ws.append("links", {
+                    "type": "Link",
+                    "link_type": link_type,
+                    "link_to": link_to,
+                    "label": link_to,
+                    "is_query_report": 1 if link_type == "Report" else 0,
+                })
 
-    frappe.db.commit()
-    frappe.clear_cache()
+        ws.insert(ignore_permissions=True)
+        frappe.db.commit()
+        frappe.clear_cache()
 
-    count = frappe.db.count("Workspace Link", {"parent": ws_name})
-    print(f"Workspace '{ws_name}' created with {count} link entries!")
+        count = frappe.db.count("Workspace Link", {"parent": ws_name})
+        print(f"Workspace '{ws_name}' created with {count} links!")
+    except Exception as e:
+        frappe.log_error(f"Workspace creation failed: {e}", "PP Workspace")
+        print(f"ERROR: {e}")
+    finally:
+        frappe.flags.in_install = old_install
+        frappe.flags.in_migrate = old_migrate
 
 
 def _get_cards_config():
