@@ -4,89 +4,36 @@ from frappe.utils import now_datetime
 
 
 def execute():
-    """Create workspace with all links using Frappe API.
+    """Create workspace with all links.
     Run via: bench --site <site> execute petrol_pump_management.workspace_setup
     """
     ws_name = "Petrol Pump Management"
+    now = str(now_datetime())
 
     # Step 1: Clean up ALL existing workspaces for this module
-    for old_name in frappe.get_all("Workspace",
-        filters={"module": "PP Management"},
-        pluck="name"
-    ):
+    existing = frappe.get_all("Workspace", filters={"module": "PP Management"}, pluck="name")
+    for old_name in existing:
         frappe.delete_doc("Workspace", old_name, force=True, ignore_missing=True)
 
-    # Also delete any customization
+    # Also delete customizations
     frappe.db.sql("DELETE FROM `tabCustom Workspace` WHERE reference_name = %s", ws_name)
     frappe.db.commit()
 
-    # Step 2: Build card config - each card has a name, icon, and links
-    cards_config = [
-        {
-            "label": "Configuration",
-            "icon": "octicon octicon-gear",
-            "links": [
-                {"link_type": "DocType", "link_to": "Station Configuration"},
-                {"link_type": "DocType", "link_to": "Tank Master"},
-                {"link_type": "DocType", "link_to": "Nozzle Master"},
-                {"link_type": "DocType", "link_to": "Fuel Price Master"},
-                {"link_type": "DocType", "link_to": "Employee Master"},
-                {"link_type": "DocType", "link_to": "Tank Dip Chart"},
-            ],
-        },
-        {
-            "label": "Operations",
-            "icon": "octicon octicon-gear",
-            "links": [
-                {"link_type": "DocType", "link_to": "Shift"},
-                {"link_type": "DocType", "link_to": "Shift Nozzle Allotment"},
-                {"link_type": "DocType", "link_to": "Fuel Sale"},
-                {"link_type": "DocType", "link_to": "Meter Reading"},
-                {"link_type": "DocType", "link_to": "Daily Stock Register"},
-                {"link_type": "DocType", "link_to": "Stock Purchase Decantation"},
-                {"link_type": "DocType", "link_to": "Trip Voucher"},
-                {"link_type": "DocType", "link_to": "PP Supplier Master"},
-            ],
-        },
-        {
-            "label": "Credit & Sales",
-            "icon": "octicon octicon-credit-card",
-            "links": [
-                {"link_type": "DocType", "link_to": "PP Customer"},
-                {"link_type": "DocType", "link_to": "Vehicle Master"},
-                {"link_type": "DocType", "link_to": "Credit Sale Invoice"},
-                {"link_type": "DocType", "link_to": "Payment Receipt"},
-                {"link_type": "DocType", "link_to": "Credit Limit Ledger"},
-                {"link_type": "DocType", "link_to": "ANPR Scan Log"},
-            ],
-        },
-        {
-            "label": "Finance & HR",
-            "icon": "octicon octicon-dollar",
-            "links": [
-                {"link_type": "DocType", "link_to": "Expense Entry"},
-                {"link_type": "DocType", "link_to": "Attendance Register"},
-                {"link_type": "DocType", "link_to": "Advance Amount"},
-                {"link_type": "DocType", "link_to": "Bank Deposit"},
-                {"link_type": "DocType", "link_to": "Day Settlement"},
-            ],
-        },
-        {
-            "label": "Reports",
-            "icon": "octicon octicon-graph",
-            "links": [
-                {"link_type": "Report", "link_to": "Daily Sales Summary"},
-                {"link_type": "Report", "link_to": "Shift Settlement Report"},
-                {"link_type": "Report", "link_to": "Stock Variation Report"},
-                {"link_type": "Report", "link_to": "Credit Customer Ageing"},
-                {"link_type": "Report", "link_to": "GST VAT Summary"},
-            ],
-        },
-    ]
+    # Step 2: Get the actual column names from tabWorkspace
+    ws_cols = set(r[0] for r in frappe.db.sql("SHOW COLUMNS FROM `tabWorkspace`"))
 
-    # Step 3: Create workspace using Frappe's build_links_table_from_card
-    doc = frappe.get_doc({
-        "doctype": "Workspace",
+    # Step 3: Build content JSON
+    card_names = ["Configuration", "Operations", "Credit & Sales", "Finance & HR", "Reports"]
+    content = json.dumps([
+        {"type": "header", "data": {"text": ws_name, "level": "h2"}},
+    ] + [
+        {"type": "card", "data": {"card_name": cn, "col": 4}} for cn in card_names
+    ])
+
+    # Step 4: Insert workspace using only columns that exist
+    ws_data = {}
+    ws_map = {
+        "name": ws_name,
         "label": ws_name,
         "title": ws_name,
         "module": "PP Management",
@@ -94,48 +41,104 @@ def execute():
         "indicator_color": "orange",
         "public": 1,
         "is_hidden": 0,
-        "content": json.dumps([
-            {"type": "header", "data": {"text": ws_name, "level": "h2"}},
-        ]),
+        "content": content,
         "type": "Workspace",
-    })
-    doc.flags.with_module = True
-    doc.insert(ignore_permissions=True)
+        "docstatus": 0,
+        "owner": "Administrator",
+        "modified_by": "Administrator",
+        "modified": now,
+        "creation": now,
+    }
+    for k, v in ws_map.items():
+        if k in ws_cols:
+            ws_data[k] = v
 
-    # Step 4: Build links table using Frappe's own method
-    card_json = []
-    for card in cards_config:
-        card_json.append({
-            "label": card["label"],
-            "icon": card["icon"],
-            "links": json.dumps(card["links"]),
-            "link_count": len(card["links"]),
-            "hidden": 0,
-            "description": "",
-        })
-
-    doc.build_links_table_from_card(card_json)
-    doc.save(ignore_permissions=True)
+    cols_str = ", ".join([f"`{k}`" for k in ws_data])
+    phs_str = ", ".join(["%s"] * len(ws_data))
+    frappe.db.sql(f"INSERT INTO `tabWorkspace` ({cols_str}) VALUES ({phs_str})", list(ws_data.values()))
     frappe.db.commit()
 
-    # Step 5: Force public=1 (Frappe sometimes resets this)
-    frappe.db.sql(
-        "UPDATE `tabWorkspace` SET public=1, is_hidden=0 WHERE name=%s", ws_name
-    )
+    # Step 5: Get Workspace Link columns
+    link_cols = set(r[0] for r in frappe.db.sql("SHOW COLUMNS FROM `tabWorkspace Link`"))
+
+    # Step 6: Insert links - CRITICAL: 'type' field = Card Break or Link
+    #         'link_type' field = DocType or Report
+    links = [
+        # Card Break, link_type, link_to, label, hidden, is_query_report, icon
+        ("Card Break", None, None, "Configuration", 0, 0, "octicon octicon-gear"),
+        ("Link", "DocType", "Station Configuration", "Station Configuration", 0, 0, None),
+        ("Link", "DocType", "Tank Master", "Tank Master", 0, 0, None),
+        ("Link", "DocType", "Nozzle Master", "Nozzle Master", 0, 0, None),
+        ("Link", "DocType", "Fuel Price Master", "Fuel Price Master", 0, 0, None),
+        ("Link", "DocType", "Employee Master", "Employee Master", 0, 0, None),
+        ("Link", "DocType", "Tank Dip Chart", "Tank Dip Chart", 0, 0, None),
+
+        ("Card Break", None, None, "Operations", 0, 0, "octicon octicon-gear"),
+        ("Link", "DocType", "Shift", "Shift", 0, 0, None),
+        ("Link", "DocType", "Shift Nozzle Allotment", "Shift Nozzle Allotment", 0, 0, None),
+        ("Link", "DocType", "Fuel Sale", "Fuel Sale", 0, 0, None),
+        ("Link", "DocType", "Meter Reading", "Meter Reading", 0, 0, None),
+        ("Link", "DocType", "Daily Stock Register", "Daily Stock Register", 0, 0, None),
+        ("Link", "DocType", "Stock Purchase Decantation", "Stock Purchase Decantation", 0, 0, None),
+        ("Link", "DocType", "Trip Voucher", "Trip Voucher", 0, 0, None),
+        ("Link", "DocType", "PP Supplier Master", "PP Supplier Master", 0, 0, None),
+
+        ("Card Break", None, None, "Credit & Sales", 0, 0, "octicon octicon-credit-card"),
+        ("Link", "DocType", "PP Customer", "PP Customer", 0, 0, None),
+        ("Link", "DocType", "Vehicle Master", "Vehicle Master", 0, 0, None),
+        ("Link", "DocType", "Credit Sale Invoice", "Credit Sale Invoice", 0, 0, None),
+        ("Link", "DocType", "Payment Receipt", "Payment Receipt", 0, 0, None),
+        ("Link", "DocType", "Credit Limit Ledger", "Credit Limit Ledger", 0, 0, None),
+        ("Link", "DocType", "ANPR Scan Log", "ANPR Scan Log", 0, 0, None),
+
+        ("Card Break", None, None, "Finance & HR", 0, 0, "octicon octicon-dollar"),
+        ("Link", "DocType", "Expense Entry", "Expense Entry", 0, 0, None),
+        ("Link", "DocType", "Attendance Register", "Attendance Register", 0, 0, None),
+        ("Link", "DocType", "Advance Amount", "Advance Amount", 0, 0, None),
+        ("Link", "DocType", "Bank Deposit", "Bank Deposit", 0, 0, None),
+        ("Link", "DocType", "Day Settlement", "Day Settlement", 0, 0, None),
+
+        ("Card Break", None, None, "Reports", 0, 0, "octicon octicon-graph"),
+        ("Link", "Report", "Daily Sales Summary", "Daily Sales Summary", 0, 1, None),
+        ("Link", "Report", "Shift Settlement Report", "Shift Settlement Report", 0, 1, None),
+        ("Link", "Report", "Stock Variation Report", "Stock Variation Report", 0, 1, None),
+        ("Link", "Report", "Credit Customer Ageing", "Credit Customer Ageing", 0, 1, None),
+        ("Link", "Report", "GST VAT Summary", "GST VAT Summary", 0, 1, None),
+    ]
+
+    for idx, (ltype, link_type, link_to, label, hidden, is_qr, icon) in enumerate(links):
+        # Build link values - only use columns that actually exist
+        row = {
+            "name": f"{ws_name}-{idx + 1}",
+            "parent": ws_name,
+            "parenttype": "Workspace",
+            "parentfield": "links",
+            "idx": idx + 1,
+            "type": ltype,              # "Card Break" or "Link"
+            "label": label,
+            "hidden": hidden,
+            "docstatus": 0,
+            "owner": "Administrator",
+            "modified_by": "Administrator",
+            "modified": now,
+            "creation": now,
+        }
+        # Only add link_type/link_to/icon for actual links
+        if ltype == "Link":
+            row["link_type"] = link_type
+            row["link_to"] = link_to
+            row["is_query_report"] = is_qr
+        elif icon:
+            row["icon"] = icon
+
+        safe_row = {k: v for k, v in row.items() if v is not None and k in link_cols}
+        lc = ", ".join([f"`{k}`" for k in safe_row])
+        lp = ", ".join(["%s"] * len(safe_row))
+        frappe.db.sql(f"INSERT INTO `tabWorkspace Link` ({lc}) VALUES ({lp})", list(safe_row.values()))
+
     frappe.db.commit()
 
-    # Step 6: Rebuild content JSON to match the actual links
-    card_names = [c["label"] for c in cards_config]
-    content = json.dumps(
-        [{"type": "header", "data": {"text": ws_name, "level": "h2"}}]
-        + [{"type": "card", "data": {"card_name": cn, "col": 4}} for cn in card_names]
-    )
-    frappe.db.sql(
-        "UPDATE `tabWorkspace` SET content=%s WHERE name=%s",
-        (content, ws_name),
-    )
-    frappe.db.commit()
+    # Step 7: Verify
+    count = frappe.db.count("Workspace Link", {"parent": ws_name})
     frappe.clear_cache()
-
-    link_count = len(frappe.get_all("Workspace Link", filters={"parent": ws_name}))
-    print(f"Workspace '{ws_name}' created with {link_count} links in {len(card_names)} cards!")
+    print(f"Workspace '{ws_name}' created successfully with {count} links!")
