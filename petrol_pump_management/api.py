@@ -16,10 +16,9 @@ def get_customer_credit_balance(customer):
 
 @frappe.whitelist(allow_guest=True)
 def fix_workspace():
-    """Fix Petrol Pump Management workspace using direct SQL (bypasses ORM).
+    """Fix Petrol Pump Management workspace.
 
-    Open this URL in your browser:
-    /api/method/petrol_pump_management.api.fix_workspace
+    Open: /api/method/petrol_pump_management.api.fix_workspace
     """
     ws_name = "Petrol Pump Management"
     now = frappe.utils.now_datetime()
@@ -27,67 +26,39 @@ def fix_workspace():
 
     # Step 1: Delete ALL existing workspaces for this module
     all_ws = frappe.db.get_all(
-        "Workspace",
-        filters={"module": "PP Management"},
-        pluck="name",
+        "Workspace", filters={"module": "PP Management"}, pluck="name",
     )
     for name in all_ws:
         frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", name)
         frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", name)
-        results.append(f"Deleted workspace: {name}")
+        results.append(f"Deleted: {name}")
 
-    # Also clean partial matches
-    other_ws = frappe.db.sql(
+    for row in frappe.db.sql(
         "SELECT name FROM `tabWorkspace` WHERE name LIKE %s OR name LIKE %s",
-        ("%Petrol%", "%PP%"),
-        as_dict=True,
-    )
-    for ws_row in other_ws:
-        if ws_row.name != ws_name:
-            frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", ws_row.name)
-            frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", ws_row.name)
-            results.append(f"Deleted stale: {ws_row.name}")
+        ("%Petrol%", "%PP%"), as_dict=True,
+    ):
+        if row.name != ws_name:
+            frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", row.name)
+            frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", row.name)
+            results.append(f"Deleted stale: {row.name}")
 
     frappe.db.commit()
-    results.append("All stale entries cleaned.")
 
-    # Step 2: Create workspace parent via direct SQL (NO 'type' column)
+    # Step 2: Create workspace via ORM (avoids column issues)
     content = json.dumps([
         {"type": "header", "data": {"text": "Your Shortcuts", "level": 4, "col": 12}},
         {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Configuration", "level": 4, "col": 12}},
         {"type": "card", "data": {"card_name": "Configuration", "col": 4}},
         {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Operations", "level": 4, "col": 12}},
         {"type": "card", "data": {"card_name": "Operations", "col": 4}},
         {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Credit & Sales", "level": 4, "col": 12}},
         {"type": "card", "data": {"card_name": "Credit & Sales", "col": 4}},
         {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Finance & HR", "level": 4, "col": 12}},
         {"type": "card", "data": {"card_name": "Finance & HR", "col": 4}},
         {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Reports", "level": 4, "col": 12}},
         {"type": "card", "data": {"card_name": "Reports", "col": 4}},
     ])
 
-    frappe.db.sql("""
-        INSERT INTO `tabWorkspace`
-        (name, creation, modified, owner, modified_by, docstatus, idx,
-         module, label, title, icon, indicator_color,
-         public, is_hidden, content)
-        VALUES (%s, %s, %s, %s, %s, 0, 0,
-         %s, %s, %s, %s, %s,
-         1, 0, %s)
-    """, (
-        ws_name, now, now, "Administrator", "Administrator",
-        "PP Management", ws_name, ws_name,
-        "octicon octicon-fuel", "orange",
-        content,
-    ))
-    results.append(f"Workspace '{ws_name}' parent created via SQL.")
-
-    # Step 3: Insert all links via direct SQL
     links_data = [
         ("Card Break", "Configuration", "", "", 0, 0, "octicon octicon-gear", 1),
         ("Link", "Station Configuration", "DocType", "Station Configuration", 0, 0, "", 2),
@@ -126,31 +97,48 @@ def fix_workspace():
         ("Link", "GST VAT Summary", "Report", "GST VAT Summary", 0, 1, "", 35),
     ]
 
-    card_count = 0
+    # Create workspace via ORM (no raw SQL for parent - avoids column issues)
+    ws = frappe.get_doc({
+        "doctype": "Workspace",
+        "label": ws_name,
+        "title": ws_name,
+        "module": "PP Management",
+        "icon": "octicon octicon-fuel",
+        "indicator_color": "orange",
+        "public": 1,
+        "is_hidden": 0,
+        "content": content,
+    })
+    ws.flags.with_module = True
+    ws.flags.ignore_links = True
+    ws.flags.ignore_validate = True
+    ws.flags.ignore_permissions = True
+    ws.flags.ignore_mandatory = True
+    ws.insert(ignore_permissions=True)
+    frappe.db.commit()
+    results.append(f"Workspace '{ws.name}' created via ORM.")
+
+    # Step 3: Insert links via raw SQL (child table DOES have 'type' column)
     for ltype, label, link_type, link_to, hidden, is_query_report, icon, idx in links_data:
         frappe.db.sql("""
             INSERT INTO `tabWorkspace Link`
-            (name, creation, modified, owner, modified_by, parent, parentfield, parenttype, docstatus, idx,
-             type, label, link_type, link_to, hidden, is_query_report, onboard, dependencies, link_count, icon)
-            VALUES
-            (%s, %s, %s, %s, %s, %s, 'links', 'Workspace', 0, %s,
-             %s, %s, %s, %s, %s, %s, 0, '', 0, %s)
+            (name, creation, modified, owner, modified_by, parent, parentfield, parenttype,
+             docstatus, idx, type, label, link_type, link_to, hidden, is_query_report,
+             onboard, dependencies, link_count, icon)
+            VALUES (%s, %s, %s, %s, %s, %s, 'links', 'Workspace',
+             0, %s, %s, %s, %s, %s, %s, %s, 0, '', 0, %s)
         """, (
             frappe.utils.cstr(frappe.utils.random_string(8)),
             now, now, "Administrator", "Administrator",
             ws_name, idx,
             ltype, label, link_type, link_to, hidden, is_query_report, icon,
         ))
-        card_count += 1
 
     frappe.db.commit()
-    results.append(f"Inserted {card_count} links via direct SQL.")
 
     # Step 4: Verify
     count = frappe.db.count("Workspace Link", {"parent": ws_name})
-    ws_exists = frappe.db.exists("Workspace", ws_name)
-    results.append(f"Verification - Workspace exists: {ws_exists}, Links count: {count}")
-
+    results.append(f"Links count: {count}")
     frappe.clear_cache()
 
     return {

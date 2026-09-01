@@ -11,12 +11,12 @@ def after_install():
 
 
 def after_migrate():
-    """After migration - ensure workspace exists with all links using direct SQL."""
+    """After migration - ensure workspace exists with all links."""
     _ensure_workspace()
 
 
 def _ensure_workspace():
-    """Create workspace with all links using direct SQL. Idempotent - skips if already done."""
+    """Create workspace with all links. Idempotent - skips if already done."""
     ws_name = "Petrol Pump Management"
 
     # Check if workspace already has links - if so, skip
@@ -54,21 +54,6 @@ def _ensure_workspace():
         {"type": "spacer", "data": {"col": 12}},
         {"type": "card", "data": {"card_name": "Reports", "col": 4}},
     ])
-
-    frappe.db.sql("""
-        INSERT INTO `tabWorkspace`
-        (name, creation, modified, owner, modified_by, docstatus, idx,
-         module, label, title, icon, indicator_color,
-         public, is_hidden, content)
-        VALUES (%s, %s, %s, %s, %s, 0, 0,
-         %s, %s, %s, %s, %s,
-         1, 0, %s)
-    """, (
-        ws_name, now, now, "Administrator", "Administrator",
-        "PP Management", ws_name, ws_name,
-        "octicon octicon-fuel", "orange",
-        content,
-    ))
 
     links_data = [
         ("Card Break", "Configuration", "", "", 0, 0, "octicon octicon-gear", 1),
@@ -108,6 +93,27 @@ def _ensure_workspace():
         ("Link", "GST VAT Summary", "Report", "GST VAT Summary", 0, 1, "", 35),
     ]
 
+    # Create workspace via ORM (no raw SQL for parent - avoids column issues)
+    ws = frappe.get_doc({
+        "doctype": "Workspace",
+        "label": ws_name,
+        "title": ws_name,
+        "module": "PP Management",
+        "icon": "octicon octicon-fuel",
+        "indicator_color": "orange",
+        "public": 1,
+        "is_hidden": 0,
+        "content": content,
+    })
+    ws.flags.with_module = True
+    ws.flags.ignore_links = True
+    ws.flags.ignore_validate = True
+    ws.flags.ignore_permissions = True
+    ws.flags.ignore_mandatory = True
+    ws.insert(ignore_permissions=True)
+    frappe.db.commit()
+
+    # Insert links via raw SQL (child table has 'type' column)
     for ltype, label, lt, lto, hidden, iqr, icon, idx in links_data:
         frappe.db.sql("""
             INSERT INTO `tabWorkspace Link`
