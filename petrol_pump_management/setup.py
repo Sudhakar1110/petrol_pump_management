@@ -11,8 +11,12 @@ def after_install():
 
 
 def after_migrate():
-    """No-op - workspace is created via bench execute."""
-    pass
+    """Create workspace after migration."""
+    try:
+        from petrol_pump_management.workspace_setup import execute
+        execute()
+    except Exception as e:
+        frappe.log_error(f"Workspace setup failed: {e}", "Petrol Pump Workspace Setup")
 
 
 def create_roles():
