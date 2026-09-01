@@ -6,11 +6,21 @@ Handlers for ERPNext document events
 import frappe
 
 
-def on_submit_sales_invoice(doc, method):
-    """Handle Sales Invoice submission - sync with petrol pump records."""
+def on_submit_generic(doc, method):
+    """
+    Generic document event handler.
+    Handles post-submit logic for petrol pump DocTypes.
+    """
     pass
 
 
-def on_submit_payment_entry(doc, method):
-    """Handle Payment Entry submission - update credit ledgers."""
-    pass
+def boot_session(bootinfo):
+    """
+    Add petrol pump management data to boot session.
+    """
+    bootinfo.station_config = frappe.get_single_doc("Station Configuration")
+    bootinfo.active_fuel_rates = frappe.get_all(
+        "Fuel Price Master",
+        filters={"is_active": 1},
+        fields=["fuel_type", "rate_per_litre"],
+    )

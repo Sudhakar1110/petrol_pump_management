@@ -12,15 +12,15 @@ required_apps = ["frappe", "erpnext"]
 app_include_css = "/assets/petrol_pump_management/css/petrol_pump.css"
 app_include_js = "/assets/petrol_pump_management/js/petrol_pump.js"
 
+# Boot session
+boot_session = "petrol_pump_management.events.boot_session"
+
 # Document Events
 # ------------------
 
 doc_events = {
-    "Sales Invoice": {
-        "on_submit": "petrol_pump_management.events.sales_invoice.on_submit",
-    },
-    "Payment Entry": {
-        "on_submit": "petrol_pump_management.events.payment_entry.on_submit",
+    "#": {
+        "on_submit": "petrol_pump_management.events.on_submit_generic",
     },
 }
 

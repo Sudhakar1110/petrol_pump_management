@@ -1,0 +1,17 @@
+{
+  "name": "Credit Customer Ageing",
+  "module": "Petrol Pump Management",
+  "doctype": "Report",
+  "document_type": "Credit Sale Invoice",
+  "report_type": "Script Report",
+  "is_standard": "Yes",
+  "roles": [
+    {
+      "role": "Credit Accounts Officer"
+    },
+    {
+      "role": "Recovery Officer"
+    }
+  ],
+  "filters": []
+}

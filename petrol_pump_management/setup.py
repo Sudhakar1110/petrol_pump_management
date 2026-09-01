@@ -166,6 +166,48 @@ def create_default_permissions():
          "read": 1, "write": 1, "create": 1, "delete": 1},
         {"role": "Salesman DSM", "doctype": "Employee Master", "permlevel": 0,
          "read": 1},
+
+        # Expense Entry (Layer 4)
+        {"role": "Station Manager", "doctype": "Expense Entry", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1, "delete": 1, "submit": 1, "cancel": 1},
+        {"role": "System Manager", "doctype": "Expense Entry", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1, "delete": 1, "submit": 1, "cancel": 1},
+        {"role": "Petrol Pump Auditor", "doctype": "Expense Entry", "permlevel": 0,
+         "read": 1},
+
+        # Attendance Register (Layer 4)
+        {"role": "Station Manager", "doctype": "Attendance Register", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1, "delete": 1},
+        {"role": "Salesman DSM", "doctype": "Attendance Register", "permlevel": 0,
+         "read": 1},
+
+        # Advance Amount
+        {"role": "Station Manager", "doctype": "Advance Amount", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1, "delete": 1},
+        {"role": "System Manager", "doctype": "Advance Amount", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1},
+
+        # Bank Deposit
+        {"role": "Station Manager", "doctype": "Bank Deposit", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1, "delete": 1, "submit": 1},
+        {"role": "System Manager", "doctype": "Bank Deposit", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1, "submit": 1},
+
+        # Day Settlement
+        {"role": "Station Manager", "doctype": "Day Settlement", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1, "delete": 1, "submit": 1},
+        {"role": "System Manager", "doctype": "Day Settlement", "permlevel": 0,
+         "read": 1, "write": 1, "submit": 1},
+
+        # PP Supplier Master
+        {"role": "Station Manager", "doctype": "PP Supplier Master", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1, "delete": 1},
+        {"role": "System Manager", "doctype": "PP Supplier Master", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1, "delete": 1},
+
+        # Trip Voucher
+        {"role": "Station Manager", "doctype": "Trip Voucher", "permlevel": 0,
+         "read": 1, "write": 1, "create": 1, "delete": 1, "submit": 1, "cancel": 1},
     ]
 
     for perm in permissions:
