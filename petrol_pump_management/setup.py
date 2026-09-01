@@ -21,8 +21,8 @@ def fix_workspace_public():
     """Force workspace to be public so it shows on desk."""
     frappe.reload_doctype("Workspace")
     frappe.db.sql(
-        'UPDATE `tabWorkspace` SET public=1 WHERE name=%s AND app=%s',
-        ("PP Management", "petrol_pump_management")
+        'UPDATE `tabWorkspace` SET public=1 WHERE name=%s',
+        ("PP Management",)
     )
 
 
