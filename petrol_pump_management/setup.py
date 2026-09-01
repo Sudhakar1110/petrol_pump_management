@@ -55,15 +55,14 @@ def _ensure_workspace():
         {"type": "card", "data": {"card_name": "Reports", "col": 4}},
     ])
 
-    # Insert workspace parent directly via SQL
     frappe.db.sql("""
         INSERT INTO `tabWorkspace`
         (name, creation, modified, owner, modified_by, docstatus, idx,
          module, label, title, icon, indicator_color,
-         type, public, is_hidden, content)
+         public, is_hidden, content)
         VALUES (%s, %s, %s, %s, %s, 0, 0,
          %s, %s, %s, %s, %s,
-         'Workspace', 1, 0, %s)
+         1, 0, %s)
     """, (
         ws_name, now, now, "Administrator", "Administrator",
         "PP Management", ws_name, ws_name,
@@ -71,7 +70,6 @@ def _ensure_workspace():
         content,
     ))
 
-    # Insert all 30 links directly via SQL
     links_data = [
         ("Card Break", "Configuration", "", "", 0, 0, "octicon octicon-gear", 1),
         ("Link", "Station Configuration", "DocType", "Station Configuration", 0, 0, "", 2),
