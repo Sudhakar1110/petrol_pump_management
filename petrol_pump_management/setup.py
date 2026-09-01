@@ -17,7 +17,7 @@ def after_migrate():
 
 
 def _create_workspace():
-    """Create workspace with links using SQL insert + ORM append."""
+    """Create workspace with links. Uses ORM for both parent and children."""
     ws_name = "Petrol Pump Management"
 
     # Skip if workspace already has links
@@ -26,13 +26,72 @@ def _create_workspace():
         if count > 0:
             return
 
-    # Delete any broken workspace
+    # Clean up any broken workspace
     frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent LIKE '%%Petrol Pump%%'")
     frappe.db.sql("DELETE FROM `tabWorkspace` WHERE module = 'PP Management'")
     frappe.db.commit()
 
-    # Card configuration
-    cards = [
+    cards = _get_cards_config()
+    card_names = [c["label"] for c in cards]
+    content = json.dumps([
+        {"type": "card", "data": {"card_name": cn, "col": 4}}
+        for cn in card_names
+    ])
+
+    # Create workspace doc - use flags to bypass restrictions
+    old_in_install = frappe.flags.in_install
+    old_in_migrate = frappe.flags.in_migrate
+    frappe.flags.in_install = False
+    frappe.flags.in_migrate = False
+
+    try:
+        doc = frappe.get_doc({
+            "doctype": "Workspace",
+            "label": ws_name,
+            "title": ws_name,
+            "module": "PP Management",
+            "icon": "octicon octicon-fuel",
+            "indicator_color": "orange",
+            "public": 1,
+            "is_hidden": 0,
+            "content": content,
+            "type": "Workspace",
+        })
+        doc.flags.with_module = True
+
+        for card in cards:
+            doc.append("links", {
+                "type": "Card Break",
+                "label": card["label"],
+                "icon": card.get("icon", ""),
+                "link_count": len(card["links"]),
+            })
+            for link_type, link_to in card["links"]:
+                doc.append("links", {
+                    "type": "Link",
+                    "link_type": link_type,
+                    "link_to": link_to,
+                    "label": link_to,
+                    "is_query_report": 1 if link_type == "Report" else 0,
+                })
+
+        doc.insert(ignore_permissions=True)
+        frappe.db.commit()
+        frappe.clear_cache()
+    finally:
+        frappe.flags.in_install = old_in_install
+        frappe.flags.in_migrate = old_in_migrate
+
+    count = frappe.db.count("Workspace Link", {"parent": ws_name})
+    if count == 0:
+        frappe.log_error(
+            f"Workspace created but has 0 links! Cards config: {len(cards)}",
+            "PP Workspace Debug"
+        )
+
+
+def _get_cards_config():
+    return [
         {"label": "Configuration", "icon": "octicon octicon-gear", "links": [
             ("DocType", "Station Configuration"),
             ("DocType", "Tank Master"),
@@ -74,55 +133,6 @@ def _create_workspace():
             ("Report", "GST VAT Summary"),
         ]},
     ]
-
-    card_names = [c["label"] for c in cards]
-    content = json.dumps([
-        {"type": "card", "data": {"card_name": cn, "col": 4}}
-        for cn in card_names
-    ])
-
-    now = str(frappe.utils.now_datetime())
-
-    # Step 1: Insert workspace via SQL
-    try:
-        frappe.db.sql("""
-            INSERT INTO `tabWorkspace`
-            (name, label, title, module, icon, indicator_color,
-             public, is_hidden, content, docstatus,
-             owner, modified_by, modified, creation)
-            VALUES (%s, %s, %s, %s, %s, %s,
-                    1, 0, %s, 0,
-                    'Administrator', 'Administrator', %s, %s)
-        """, (ws_name, ws_name, ws_name, "PP Management",
-              "octicon octicon-fuel", "orange", content, now, now))
-        frappe.db.commit()
-    except Exception as e:
-        frappe.log_error(f"Workspace SQL insert failed: {e}", "PP Workspace")
-        return
-
-    # Step 2: Load and add links via ORM
-    try:
-        doc = frappe.get_doc("Workspace", ws_name)
-        for card in cards:
-            doc.append("links", {
-                "type": "Card Break",
-                "label": card["label"],
-                "icon": card.get("icon", ""),
-                "link_count": len(card["links"]),
-            })
-            for link_type, link_to in card["links"]:
-                doc.append("links", {
-                    "type": "Link",
-                    "link_type": link_type,
-                    "link_to": link_to,
-                    "label": link_to,
-                    "is_query_report": 1 if link_type == "Report" else 0,
-                })
-        doc.save(ignore_permissions=True)
-        frappe.db.commit()
-        frappe.clear_cache()
-    except Exception as e:
-        frappe.log_error(f"Workspace ORM save failed: {e}", "PP Workspace")
 
 
 def create_roles():
