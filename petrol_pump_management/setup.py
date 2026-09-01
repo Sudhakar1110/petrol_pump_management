@@ -31,9 +31,9 @@ def ensure_workspace():
         frappe.db.sql("""
             INSERT INTO `tabWorkspace`
             (name, label, title, module, app, icon, indicator_color, public,
-             standard, is_hidden, custom, category, docstatus, owner,
+             is_hidden, custom, category, docstatus, owner,
              modified_by, modified, creation)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, 1, 1, 0, 0, 'Module', 0,
+            VALUES (%s, %s, %s, %s, %s, %s, %s, 1, 0, 0, 'Module', 0,
              'Administrator', 'Administrator', %s, %s)
         """, (ws_name, ws_name, ws_name, "PP Management", "petrol_pump_management",
               "fuel", "green", now, now))
@@ -53,8 +53,8 @@ def ensure_workspace():
     # Update workspace content and public flag
     frappe.db.sql("""
         UPDATE `tabWorkspace`
-        SET content=%s, public=1, is_hidden=0, standard=1, category='Module',
-            app='petrol_pump_management', icon='fuel', indicator_color='green'
+        SET content=%s, public=1, is_hidden=0, category='Module',
+            icon='fuel', indicator_color='green'
         WHERE name=%s
     """, (content, ws_name))
 
