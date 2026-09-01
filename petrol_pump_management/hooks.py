@@ -6,37 +6,6 @@ app_email = "markcom@bizaxl.com"
 app_license = "MIT"
 required_apps = ["frappe", "erpnext"]
 
-# Includes
-# ------------------
-
-app_include_css = "/assets/petrol_pump_management/css/petrol_pump.css"
-app_include_js = "/assets/petrol_pump_management/js/petrol_pump.js"
-
-# Boot session
-boot_session = "petrol_pump_management.events.boot_session"
-
-# Document Events
-# ------------------
-
-doc_events = {
-    "#": {
-        "on_submit": "petrol_pump_management.events.on_submit_generic",
-    },
-}
-
-# Website
-# ------------------
-
-website_route_rules = [
-    {
-        "from_route": "/pp/<path:app_path>",
-        "to_route": "petrol_pump_management",
-    },
-]
-
-# Role and Permission Setup
-# ------------------
-
 # After install
 after_install = "petrol_pump_management.setup.after_install"
 
@@ -51,12 +20,6 @@ fixtures = [
         "filters": [["module", "=", "Petrol Pump Management"]],
     },
 ]
-
-# Override whitelisted methods
-override_whitelisted_methods = {
-    "petrol_pump_management.api.get_fuel_rate": "petrol_pump_management.api.get_fuel_rate",
-    "petrol_pump_management.api.create_credit_sale": "petrol_pump_management.api.create_credit_sale",
-}
 
 # Jinja
 jinja = {
