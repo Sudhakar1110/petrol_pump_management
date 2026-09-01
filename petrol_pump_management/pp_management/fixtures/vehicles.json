@@ -1,0 +1,29 @@
+[
+  {
+    "doctype": "Vehicle Master",
+    "vehicle_number": "MH01AB1234",
+    "vehicle_type": "Car",
+    "customer": "ABC Transport Co.",
+    "fuel_type_preference": "Diesel",
+    "anpr_tag_status": "Active",
+    "registered_on": "2024-01-15"
+  },
+  {
+    "doctype": "Vehicle Master",
+    "vehicle_number": "MH01CD5678",
+    "vehicle_type": "Commercial",
+    "customer": "ABC Transport Co.",
+    "fuel_type_preference": "Diesel",
+    "anpr_tag_status": "Active",
+    "registered_on": "2024-01-15"
+  },
+  {
+    "doctype": "Vehicle Master",
+    "vehicle_number": "MH01EF9012",
+    "vehicle_type": "Car",
+    "customer": "XYZ Logistics",
+    "fuel_type_preference": "Petrol",
+    "anpr_tag_status": "Active",
+    "registered_on": "2024-02-01"
+  }
+]

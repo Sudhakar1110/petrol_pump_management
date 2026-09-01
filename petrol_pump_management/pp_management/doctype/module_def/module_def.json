@@ -1,0 +1,19 @@
+{
+  "name": "PP Management",
+  "module_name": "PP Management",
+  "app_name": "petrol_pump_management",
+  "doctype": "Module Def",
+  "custom": 0,
+  "card_name": "PP Management",
+  "icon": "octicon octicon-fuel",
+  "color": "#f59e0b",
+  "description": "Petrol Pump / Fuel Station Management",
+  "labels": [
+    "Configuration|octicon octicon-gear",
+    "Operations|octicon octicon-list-ordered",
+    "Credit & Sales|octicon octicon-credit-card",
+    "Stock Management|octicon octicon-package",
+    "Reports|octicon octicon-graph"
+  ],
+  "privileges": []
+}

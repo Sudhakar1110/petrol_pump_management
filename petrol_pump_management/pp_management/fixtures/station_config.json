@@ -1,0 +1,13 @@
+[
+  {
+    "doctype": "Station Configuration",
+    "name": "Main Station",
+    "station_name": "Main Station",
+    "dealer_licence_no": "DL-001",
+    "gst_number": "27AABCU9603R1ZM",
+    "default_fuel_unit": "Litre",
+    "financial_year_start": "April",
+    "default_currency": "INR",
+    "contact_email": "admin@fuelstation.com"
+  }
+]

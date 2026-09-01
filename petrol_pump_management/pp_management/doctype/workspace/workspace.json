@@ -1,0 +1,239 @@
+{
+  "name": "PP Management",
+  "module": "PP Management",
+  "doctype": "Workspace",
+  "title": "Petrol Pump Management",
+  "icon": "octicon octicon-fuel",
+  "links": [
+    {
+      "label": "Configuration",
+      "type": "heading",
+      "items": [
+        {
+          "type": "shortcut",
+          "name": "Station Configuration New",
+          "link_type": "DocType",
+          "docview": "Form",
+          "doctype": "Station Configuration"
+        },
+        {
+          "type": "shortcut",
+          "name": "Tank Master List",
+          "link_type": "DocType",
+          "doctype": "Tank Master"
+        },
+        {
+          "type": "shortcut",
+          "name": "Nozzle Master List",
+          "link_type": "DocType",
+          "doctype": "Nozzle Master"
+        },
+        {
+          "type": "shortcut",
+          "name": "Fuel Price Master List",
+          "link_type": "DocType",
+          "doctype": "Fuel Price Master"
+        },
+        {
+          "type": "shortcut",
+          "name": "Employee Master List",
+          "link_type": "DocType",
+          "doctype": "Employee Master"
+        }
+      ]
+    },
+    {
+      "label": "Operations",
+      "type": "heading",
+      "items": [
+        {
+          "type": "shortcut",
+          "name": "Shift List",
+          "link_type": "DocType",
+          "doctype": "Shift"
+        },
+        {
+          "type": "shortcut",
+          "name": "Fuel Sale List",
+          "link_type": "DocType",
+          "doctype": "Fuel Sale"
+        },
+        {
+          "type": "shortcut",
+          "name": "Meter Reading List",
+          "link_type": "DocType",
+          "doctype": "Meter Reading"
+        },
+        {
+          "type": "shortcut",
+          "name": "Daily Stock Register List",
+          "link_type": "DocType",
+          "doctype": "Daily Stock Register"
+        },
+        {
+          "type": "shortcut",
+          "name": "Stock Purchase Decantation List",
+          "link_type": "DocType",
+          "doctype": "Stock Purchase Decantation"
+        },
+        {
+          "type": "shortcut",
+          "name": "Trip Voucher List",
+          "link_type": "DocType",
+          "doctype": "Trip Voucher"
+        }
+      ]
+    },
+    {
+      "label": "Credit & Sales",
+      "type": "heading",
+      "items": [
+        {
+          "type": "shortcut",
+          "name": "PP Customer List",
+          "link_type": "DocType",
+          "doctype": "PP Customer"
+        },
+        {
+          "type": "shortcut",
+          "name": "Vehicle Master List",
+          "link_type": "DocType",
+          "doctype": "Vehicle Master"
+        },
+        {
+          "type": "shortcut",
+          "name": "Credit Sale Invoice List",
+          "link_type": "DocType",
+          "doctype": "Credit Sale Invoice"
+        },
+        {
+          "type": "shortcut",
+          "name": "Payment Receipt List",
+          "link_type": "DocType",
+          "doctype": "Payment Receipt"
+        },
+        {
+          "type": "shortcut",
+          "name": "Credit Limit Ledger List",
+          "link_type": "DocType",
+          "doctype": "Credit Limit Ledger"
+        },
+        {
+          "type": "shortcut",
+          "name": "ANPR Scan Log List",
+          "link_type": "DocType",
+          "doctype": "ANPR Scan Log"
+        }
+      ]
+    },
+    {
+      "label": "Finance & HR",
+      "type": "heading",
+      "items": [
+        {
+          "type": "shortcut",
+          "name": "Expense Entry List",
+          "link_type": "DocType",
+          "doctype": "Expense Entry"
+        },
+        {
+          "type": "shortcut",
+          "name": "Attendance Register List",
+          "link_type": "DocType",
+          "doctype": "Attendance Register"
+        },
+        {
+          "type": "shortcut",
+          "name": "Advance Amount List",
+          "link_type": "DocType",
+          "doctype": "Advance Amount"
+        },
+        {
+          "type": "shortcut",
+          "name": "Bank Deposit List",
+          "link_type": "DocType",
+          "doctype": "Bank Deposit"
+        },
+        {
+          "type": "shortcut",
+          "name": "Day Settlement List",
+          "link_type": "DocType",
+          "doctype": "Day Settlement"
+        },
+        {
+          "type": "shortcut",
+          "name": "PP Supplier Master List",
+          "link_type": "DocType",
+          "doctype": "PP Supplier Master"
+        }
+      ]
+    },
+    {
+      "label": "Reports",
+      "type": "heading",
+      "items": [
+        {
+          "type": "shortcut",
+          "name": "Daily Sales Summary",
+          "link_type": "Report",
+          "doctype": "Fuel Sale",
+          "is_query_report": 1
+        },
+        {
+          "type": "shortcut",
+          "name": "Shift Settlement Report",
+          "link_type": "Report",
+          "doctype": "Shift",
+          "is_query_report": 1
+        },
+        {
+          "type": "shortcut",
+          "name": "Stock Variation Report",
+          "link_type": "Report",
+          "doctype": "Daily Stock Register",
+          "is_query_report": 1
+        },
+        {
+          "type": "shortcut",
+          "name": "Credit Customer Ageing",
+          "link_type": "Report",
+          "doctype": "Credit Sale Invoice",
+          "is_query_report": 1
+        },
+        {
+          "type": "shortcut",
+          "name": "GST VAT Summary",
+          "link_type": "Report",
+          "doctype": "Fuel Sale",
+          "is_query_report": 1
+        }
+      ]
+    },
+    {
+      "label": "Pages",
+      "type": "heading",
+      "items": [
+        {
+          "type": "shortcut",
+          "name": "Dashboard",
+          "link_type": "Page",
+          "page": "petrol-pump-dashboard"
+        },
+        {
+          "type": "shortcut",
+          "name": "Credit Portal",
+          "link_type": "Page",
+          "page": "customer-credit-portal"
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "role": "System Manager"
+    },
+    {
+      "role": "Station Manager"
+    }
+  ]
+}

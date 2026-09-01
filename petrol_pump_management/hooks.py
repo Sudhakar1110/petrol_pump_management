@@ -6,8 +6,25 @@ app_email = "markcom@bizaxl.com"
 app_license = "MIT"
 required_apps = ["frappe", "erpnext"]
 
+# Install
+# ------------------
 after_install = "petrol_pump_management.setup.after_install"
 
+# Fixtures
+# ------------------
+fixtures = [
+    {
+        "dt": "Station Configuration",
+        "filters": [["name", "=", "Main Station"]],
+    },
+    {
+        "dt": "Fuel Price Master",
+        "filters": [["is_active", "=", 1]],
+    },
+]
+
+# Jinja
+# ------------------
 jinja = {
     "methods": [
         "petrol_pump_management.utils.get_fuel_rate",
@@ -15,6 +32,8 @@ jinja = {
     ],
 }
 
+# Scheduler Events
+# ------------------
 scheduler_events = {
     "daily": [
         "petrol_pump_management.tasks.daily_stock_reconciliation",
@@ -24,4 +43,12 @@ scheduler_events = {
     "monthly": [
         "petrol_pump_management.tasks.generate_monthly_reports",
     ],
+}
+
+# Doc Events
+# ------------------
+doc_events = {
+    "Fuel Sale": {
+        "on_submit": "petrol_pump_management.events.on_fuel_sale_submit",
+    },
 }

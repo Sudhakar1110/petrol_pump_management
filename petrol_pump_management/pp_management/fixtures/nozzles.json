@@ -1,0 +1,47 @@
+[
+  {
+    "doctype": "Nozzle Master",
+    "nozzle_no": "P1-T1-1",
+    "tank": "T1-Petrol",
+    "pump_no": "P1",
+    "current_reading": 15230,
+    "fuel_price": "Fuel Price Master:Petrol",
+    "is_active": 1
+  },
+  {
+    "doctype": "Nozzle Master",
+    "nozzle_no": "P1-T1-2",
+    "tank": "T1-Petrol",
+    "pump_no": "P1",
+    "current_reading": 9845,
+    "fuel_price": "Fuel Price Master:Petrol",
+    "is_active": 1
+  },
+  {
+    "doctype": "Nozzle Master",
+    "nozzle_no": "P2-T2-1",
+    "tank": "T2-Diesel",
+    "pump_no": "P2",
+    "current_reading": 22100,
+    "fuel_price": "Fuel Price Master:Diesel",
+    "is_active": 1
+  },
+  {
+    "doctype": "Nozzle Master",
+    "nozzle_no": "P2-T2-2",
+    "tank": "T2-Diesel",
+    "pump_no": "P2",
+    "current_reading": 18760,
+    "fuel_price": "Fuel Price Master:Diesel",
+    "is_active": 1
+  },
+  {
+    "doctype": "Nozzle Master",
+    "nozzle_no": "P3-T3-1",
+    "tank": "T3-Premium",
+    "pump_no": "P3",
+    "current_reading": 7650,
+    "fuel_price": "Fuel Price Master:Premium Petrol",
+    "is_active": 1
+  }
+]

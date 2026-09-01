@@ -1,0 +1,47 @@
+[
+  {
+    "doctype": "Employee Master",
+    "employee_name": "Rajesh Kumar",
+    "role": "Manager",
+    "mobile": "9876543210",
+    "salary_type": "Fixed",
+    "joining_date": "2023-01-15",
+    "is_active": 1
+  },
+  {
+    "doctype": "Employee Master",
+    "employee_name": "Suresh Patel",
+    "role": "DSM",
+    "mobile": "9876543211",
+    "salary_type": "Duty-based",
+    "joining_date": "2023-03-01",
+    "is_active": 1
+  },
+  {
+    "doctype": "Employee Master",
+    "employee_name": "Mahesh Singh",
+    "role": "Salesman",
+    "mobile": "9876543212",
+    "salary_type": "Duty-based",
+    "joining_date": "2023-06-15",
+    "is_active": 1
+  },
+  {
+    "doctype": "Employee Master",
+    "employee_name": "Ramesh Verma",
+    "role": "Salesman",
+    "mobile": "9876543213",
+    "salary_type": "Duty-based",
+    "joining_date": "2024-01-01",
+    "is_active": 1
+  },
+  {
+    "doctype": "Employee Master",
+    "employee_name": "Ganesh Iyer",
+    "role": "Accountant",
+    "mobile": "9876543214",
+    "salary_type": "Fixed",
+    "joining_date": "2023-02-01",
+    "is_active": 1
+  }
+]

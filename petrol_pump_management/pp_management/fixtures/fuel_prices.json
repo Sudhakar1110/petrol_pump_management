@@ -1,0 +1,23 @@
+[
+  {
+    "doctype": "Fuel Price Master",
+    "fuel_type": "Petrol",
+    "rate_per_litre": 102.5,
+    "effective_from": "2024-01-01",
+    "is_active": 1
+  },
+  {
+    "doctype": "Fuel Price Master",
+    "fuel_type": "Diesel",
+    "rate_per_litre": 89.75,
+    "effective_from": "2024-01-01",
+    "is_active": 1
+  },
+  {
+    "doctype": "Fuel Price Master",
+    "fuel_type": "Premium Petrol",
+    "rate_per_litre": 112,
+    "effective_from": "2024-01-01",
+    "is_active": 1
+  }
+]

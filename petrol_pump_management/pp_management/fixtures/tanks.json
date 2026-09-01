@@ -1,0 +1,26 @@
+[
+  {
+    "doctype": "Tank Master",
+    "tank_no": "T1-Petrol",
+    "fuel_type": "Petrol",
+    "capacity_litres": 15000,
+    "current_stock": 8500,
+    "is_active": 1
+  },
+  {
+    "doctype": "Tank Master",
+    "tank_no": "T2-Diesel",
+    "fuel_type": "Diesel",
+    "capacity_litres": 20000,
+    "current_stock": 12000,
+    "is_active": 1
+  },
+  {
+    "doctype": "Tank Master",
+    "tank_no": "T3-Premium",
+    "fuel_type": "Premium Petrol",
+    "capacity_litres": 10000,
+    "current_stock": 5500,
+    "is_active": 1
+  }
+]
