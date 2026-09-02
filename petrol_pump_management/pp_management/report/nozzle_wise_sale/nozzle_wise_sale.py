@@ -32,7 +32,7 @@ def execute(filters=None):
         params.append(nozzle)
 
     data = frappe.db.sql(f"""
-        SELECT fs.nozzle, nm.fuel_type,
+        SELECT fs.nozzle, tm.fuel_type,
                COUNT(*) as total_sales,
                SUM(fs.qty_litres) as total_qty,
                SUM(fs.amount) as total_amount,
@@ -42,8 +42,9 @@ def execute(filters=None):
                SUM(CASE WHEN fs.payment_mode IN ('Card','UPI') THEN fs.amount ELSE 0 END) as card_upi_amount
         FROM `tabFuel Sale` fs
         LEFT JOIN `tabNozzle Master` nm ON fs.nozzle = nm.name
+        LEFT JOIN `tabTank Master` tm ON nm.tank = tm.name
         {conditions}
-        GROUP BY fs.nozzle, nm.fuel_type
+        GROUP BY fs.nozzle, tm.fuel_type
         ORDER BY fs.nozzle
     """, params, as_dict=True)
 

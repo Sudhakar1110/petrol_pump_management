@@ -30,9 +30,9 @@ def execute(filters=None):
         SELECT machine_id, settlement_date as date,
                COUNT(*) as total_transactions,
                SUM(total_collected) as total_amount,
-               SUM(CASE WHEN payment_type = 'Card' THEN total_collected ELSE 0 END) as card_amount,
-               SUM(CASE WHEN payment_type = 'UPI' THEN total_collected ELSE 0 END) as upi_amount,
-               SUM(CASE WHEN payment_type = 'Wallet' THEN total_collected ELSE 0 END) as wallet_amount,
+               SUM(CASE WHEN payment_mode = 'Card' THEN total_collected ELSE 0 END) as card_amount,
+               SUM(CASE WHEN payment_mode = 'UPI' THEN total_collected ELSE 0 END) as upi_amount,
+               SUM(CASE WHEN payment_mode = 'E-Wallet' THEN total_collected ELSE 0 END) as wallet_amount,
                settlement_status
         FROM `tabSwipe Settlement`
         {conditions}
