@@ -1,0 +1,17 @@
+{
+ "name": "Machine Wise Transaction",
+ "module": "PP Management",
+ "doctype": "Report",
+ "document_type": "Swipe Settlement",
+ "report_type": "Script Report",
+ "is_standard": "Yes",
+ "roles": [
+  {"role": "Station Manager"},
+  {"role": "Credit Accounts Officer"}
+ ],
+ "filters": [
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date"}
+ ],
+ "ref_doctype": "Swipe Settlement"
+}

@@ -1,0 +1,15 @@
+{
+ "name": "Inspection Nozzle Reading",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "istable": 1,
+ "fields": [
+  {"fieldname": "nozzle", "fieldtype": "Link", "label": "Nozzle", "options": "Nozzle Master", "in_list_view": 1},
+  {"fieldname": "opening_reading", "fieldtype": "Currency", "label": "Opening Reading", "in_list_view": 1},
+  {"fieldname": "closing_reading", "fieldtype": "Currency", "label": "Closing Reading", "in_list_view": 1},
+  {"fieldname": "sale_qty", "fieldtype": "Currency", "label": "Sale Qty (L)", "in_list_view": 1}
+ ],
+ "permissions": []
+}

@@ -1,0 +1,18 @@
+{
+ "name": "Sales Officer Inspection",
+ "module": "PP Management",
+ "doctype": "Report",
+ "document_type": "Station Inspection",
+ "report_type": "Script Report",
+ "is_standard": "Yes",
+ "roles": [
+  {"role": "Station Manager"},
+  {"role": "Compliance Officer"}
+ ],
+ "filters": [
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date"},
+  {"fieldname": "inspector", "fieldtype": "Link", "label": "Inspector", "options": "Employee Master"}
+ ],
+ "ref_doctype": "Station Inspection"
+}

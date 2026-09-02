@@ -1,0 +1,32 @@
+{
+ "name": "Station Inspection",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "inspection_date", "fieldtype": "Date", "label": "Inspection Date", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "inspection_time", "fieldtype": "Time", "label": "Inspection Time", "in_list_view": 1},
+  {"fieldname": "inspector", "fieldtype": "Link", "label": "Inspector", "options": "Employee Master", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "tank", "fieldtype": "Link", "label": "Tank", "options": "Tank Master", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "fuel_type", "fieldtype": "Select", "label": "Fuel Type", "options": "\nPetrol\nDiesel\nPremium", "in_list_view": 1},
+  {"fieldname": "dip_reading", "fieldtype": "Float", "label": "Dip Reading (cm)", "in_list_view": 1},
+  {"fieldname": "density", "fieldtype": "Float", "label": "Density"},
+  {"fieldname": "temperature", "fieldtype": "Float", "label": "Temperature (C)"},
+  {"fieldname": "stock_at_dip", "fieldtype": "Currency", "label": "Stock at Dip (L)"},
+  {"fieldname": "variation", "fieldtype": "Currency", "label": "Variation (L)", "in_list_view": 1},
+  {"fieldname": "nozzle_readings_section", "fieldtype": "Section Break", "label": "Nozzle Readings"},
+  {"fieldname": "nozzle_readings", "fieldtype": "Table", "label": "Nozzle Readings", "options": "Inspection Nozzle Reading"},
+  {"fieldname": "remarks", "fieldtype": "Small Text", "label": "Remarks"},
+  {"fieldname": "photos", "fieldtype": "Attach", "label": "Attach Photo"}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "read": 1, "write": 1, "create": 1},
+  {"role": "Compliance Officer", "read": 1, "write": 1, "create": 1},
+  {"role": "Petrol Pump Auditor", "read": 1}
+ ],
+ "sort_field": "inspection_date",
+ "sort_order": "DESC",
+ "search_fields": "inspector,tank,fuel_type"
+}

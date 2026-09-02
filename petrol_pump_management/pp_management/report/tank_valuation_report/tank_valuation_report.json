@@ -1,0 +1,16 @@
+{
+ "name": "Tank Valuation Report",
+ "module": "PP Management",
+ "doctype": "Report",
+ "document_type": "Tank Master",
+ "report_type": "Script Report",
+ "is_standard": "Yes",
+ "roles": [
+  {"role": "Station Manager"},
+  {"role": "Petrol Pump Auditor"}
+ ],
+ "filters": [
+  {"fieldname": "tank", "fieldtype": "Link", "label": "Tank", "options": "Tank Master"}
+ ],
+ "ref_doctype": "Tank Master"
+}

@@ -291,3 +291,70 @@ def auto_generate_commission():
 def send_monthly_statement_email():
     """Send monthly credit statements via email"""
     send_weekly_credit_email()
+
+
+def send_daily_business_summary():
+    """Send daily business summary SMS to station manager"""
+    try:
+        settings = frappe.get_single("PP Notification Settings")
+        if not settings.enable_sms:
+            return
+        station = frappe.db.get_single_value("Station Configuration", "station_name") or "Station"
+        # Get today's totals
+        sales = frappe.db.sql("""
+            SELECT IFNULL(SUM(amount), 0) as total_amount, IFNULL(SUM(qty_litres), 0) as total_qty
+            FROM `tabFuel Sale` WHERE sale_date = %s AND docstatus = 1
+        """, (today(),), as_dict=True)
+        credit = frappe.db.sql("""
+            SELECT IFNULL(SUM(amount), 0) as total
+            FROM `tabCredit Sale Invoice` WHERE DATE(creation) = %s AND docstatus = 1
+        """, (today(),), as_dict=True)
+        payments = frappe.db.sql("""
+            SELECT IFNULL(SUM(amount), 0) as total
+            FROM `tabPayment Receipt` WHERE DATE(received_on) = %s AND docstatus = 1
+        """, (today(),), as_dict=True)
+        total_sale = sales[0].total_amount if sales else 0
+        total_qty = sales[0].total_qty if sales else 0
+        total_credit = credit[0].total if credit else 0
+        total_payment = payments[0].total if payments else 0
+
+        manager_mobile = frappe.db.get_single_value("Station Configuration", "contact_email") or ""
+        if manager_mobile:
+            msg = f"Daily Summary - {station} ({today()})\nTotal Sale: Rs.{total_sale} ({total_qty}L)\nCredit Sales: Rs.{total_credit}\nPayments Received: Rs.{total_payment}"
+            sms = frappe.get_doc({
+                "doctype": "SMS Log",
+                "recipient": manager_mobile,
+                "message_type": "Custom",
+                "message": msg,
+            })
+            sms.insert(ignore_permissions=True)
+    except Exception:
+        pass
+
+
+def send_birthday_anniversary_sms():
+    """Send birthday SMS to customers and employees"""
+    try:
+        settings = frappe.get_single("PP Notification Settings")
+        if not settings.enable_sms:
+            return
+        station = frappe.db.get_single_value("Station Configuration", "station_name") or "Station"
+        # Check for customers with birthday today
+        customers = frappe.db.sql("""
+            SELECT name, full_name, mobile FROM `tabPP Customer`
+            WHERE mobile IS NOT NULL AND mobile != ''
+        """, as_dict=True)
+        for cust in customers:
+            # Simple birthday check - if DOB field exists
+            dob = frappe.db.get_value("PP Customer", cust.name, "date_of_birth")
+            if dob and getdate(dob).month == getdate(today()).month and getdate(dob).day == getdate(today()).day:
+                msg = f"Happy Birthday {cust.full_name}! Wishing you a wonderful day. From {station}"
+                sms = frappe.get_doc({
+                    "doctype": "SMS Log",
+                    "recipient": cust.mobile,
+                    "message_type": "Birthday",
+                    "message": msg,
+                })
+                sms.insert(ignore_permissions=True)
+    except Exception:
+        pass

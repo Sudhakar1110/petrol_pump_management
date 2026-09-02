@@ -16,6 +16,10 @@
   {"fieldname": "reference_no", "fieldtype": "Data", "label": "Reference Number"},
   {"fieldname": "next_followup_date", "fieldtype": "Date", "label": "Next Follow-up Date"},
   {"fieldname": "recovery_status", "fieldtype": "Select", "label": "Recovery Status", "options": "\nPending\nPartial\nFull\nEscalated", "default": "Pending", "in_list_view": 1},
+  {"fieldname": "discount", "fieldtype": "Currency", "label": "Discount / Waiver", "in_list_view": 1},
+  {"fieldname": "balance_after", "fieldtype": "Currency", "label": "Balance After Recovery", "in_list_view": 1},
+  {"fieldname": "grace_days", "fieldtype": "Int", "label": "Grace Days Allowed", "default": 0},
+  {"fieldname": "interest_waived", "fieldtype": "Currency", "label": "Interest Waived"},
   {"fieldname": "remarks", "fieldtype": "Small Text", "label": "Remarks"},
   {"fieldname": "recovered_by", "fieldtype": "Link", "label": "Recovered By", "options": "Employee Master"},
   {"fieldname": "ageing_days", "fieldtype": "Int", "label": "Overdue Days"}

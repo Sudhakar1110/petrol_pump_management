@@ -214,6 +214,7 @@ def _get_workspace_data():
         {"type": "Link", "label": "Evaporation Loss", "link_type": "DocType", "link_to": "Evaporation Loss", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Tanker Expense", "link_type": "DocType", "link_to": "Tanker Expense", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Bank Statement Import", "link_type": "DocType", "link_to": "Bank Statement Import", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Station Inspection", "link_type": "DocType", "link_to": "Station Inspection", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Day Settlement", "link_type": "DocType", "link_to": "Day Settlement", "hidden": 0, "is_query_report": 0, "onboard": 1, "dependencies": "", "link_count": 0},
 
         # ── Credit & Sales ──
@@ -286,6 +287,13 @@ def _get_workspace_data():
         {"type": "Link", "label": "Density Dip Variation", "link_type": "Report", "link_to": "Density Dip Variation", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Employee Attendance Payroll", "link_type": "Report", "link_to": "Employee Attendance Payroll", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Fuel Rate Variation Report", "link_type": "Report", "link_to": "Fuel Rate Variation Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Nozzle Wise Sale", "link_type": "Report", "link_to": "Nozzle Wise Sale", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Meter Dip Variation", "link_type": "Report", "link_to": "Meter Dip Variation", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Employee Shortage Report", "link_type": "Report", "link_to": "Employee Shortage Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Monthly Shortage Report", "link_type": "Report", "link_to": "Monthly Shortage Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Machine Wise Transaction", "link_type": "Report", "link_to": "Machine Wise Transaction", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Tank Valuation Report", "link_type": "Report", "link_to": "Tank Valuation Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Sales Officer Inspection", "link_type": "Report", "link_to": "Sales Officer Inspection", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Report Export", "link_type": "Report", "link_to": "Report Export", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
     ]
 

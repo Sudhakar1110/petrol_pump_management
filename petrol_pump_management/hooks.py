@@ -46,6 +46,8 @@ scheduler_events = {
         "petrol_pump_management.tasks.send_limit_breach_sms",
         "petrol_pump_management.tasks.auto_calculate_evaporation",
         "petrol_pump_management.tasks.send_lube_expiry_alerts",
+        "petrol_pump_management.tasks.send_daily_business_summary",
+        "petrol_pump_management.tasks.send_birthday_anniversary_sms",
     ],
     "weekly": [
         "petrol_pump_management.tasks.generate_credit_statements",

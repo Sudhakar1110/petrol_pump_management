@@ -64,6 +64,14 @@
       "reqd": 1
     },
     {
+      "fieldname": "nozzle_status",
+      "fieldtype": "Select",
+      "label": "Nozzle Status",
+      "options": "Open\nStopped\nReset",
+      "default": "Open",
+      "in_list_view": 1
+    },
+    {
       "fieldname": "is_active",
       "fieldtype": "Check",
       "label": "Is Active",

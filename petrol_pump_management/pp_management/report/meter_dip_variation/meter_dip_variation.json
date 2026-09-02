@@ -1,0 +1,18 @@
+{
+ "name": "Meter Dip Variation",
+ "module": "PP Management",
+ "doctype": "Report",
+ "document_type": "Daily Stock Register",
+ "report_type": "Script Report",
+ "is_standard": "Yes",
+ "roles": [
+  {"role": "Station Manager"},
+  {"role": "Petrol Pump Auditor"}
+ ],
+ "filters": [
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date"},
+  {"fieldname": "tank", "fieldtype": "Link", "label": "Tank", "options": "Tank Master"}
+ ],
+ "ref_doctype": "Daily Stock Register"
+}

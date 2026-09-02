@@ -1,0 +1,17 @@
+{
+ "name": "Monthly Shortage Report",
+ "module": "PP Management",
+ "doctype": "Report",
+ "document_type": "Shift",
+ "report_type": "Script Report",
+ "is_standard": "Yes",
+ "roles": [
+  {"role": "Station Manager"},
+  {"role": "System Manager"}
+ ],
+ "filters": [
+  {"fieldname": "pay_period", "fieldtype": "Data", "label": "Month (MM-YYYY)"},
+  {"fieldname": "employee", "fieldtype": "Link", "label": "Employee", "options": "Employee Master"}
+ ],
+ "ref_doctype": "Shift"
+}

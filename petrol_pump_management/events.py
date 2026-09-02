@@ -48,6 +48,10 @@ def on_fuel_sale_submit(doc, method):
             except Exception:
                 pass
 
+    # Handle reward point redemption
+    if doc.customer and hasattr(doc, 'redeem_points') and doc.redeem_points and doc.redeem_points > 0:
+        _redeem_reward_points(doc.customer, doc.redeem_points, doc.name)
+
 
 def on_credit_invoice_submit(doc, method):
     """Handle Credit Sale Invoice submission - update limit, send SMS."""
@@ -172,5 +176,36 @@ def _update_credit_limit(customer):
         # Auto-block if limit exceeded
         if available < 0 and cl.block_on_exceed:
             frappe.db.set_value("PP Customer", customer, "is_blocked", 1)
+    except Exception:
+        pass
+
+
+def _redeem_reward_points(customer, points_to_redeem, sale_name):
+    """Redeem reward points during a fuel sale"""
+    try:
+        # Get total available points
+        earned = frappe.db.sql("""
+            SELECT IFNULL(SUM(points), 0) as total
+            FROM `tabReward Points Ledger`
+            WHERE customer = %s AND transaction_type = 'Earned' AND status = 'Active'
+        """, (customer,), as_dict=True)
+        redeemed = frappe.db.sql("""
+            SELECT IFNULL(SUM(points), 0) as total
+            FROM `tabReward Points Ledger`
+            WHERE customer = %s AND transaction_type = 'Redeemed' AND status = 'Active'
+        """, (customer,), as_dict=True)
+
+        available = (earned[0].total or 0) - (redeemed[0].total or 0)
+        actual_redeem = min(points_to_redeem, available)
+
+        if actual_redeem > 0:
+            rl = frappe.new_doc("Reward Points Ledger")
+            rl.customer = customer
+            rl.transaction_type = "Redeemed"
+            rl.points = actual_redeem
+            rl.fuel_sale = sale_name
+            rl.transaction_date = frappe.utils.today()
+            rl.remarks = f"Redeemed {actual_redeem} points on sale {sale_name}"
+            rl.insert(ignore_permissions=True)
     except Exception:
         pass
