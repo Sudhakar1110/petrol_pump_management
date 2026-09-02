@@ -2,6 +2,7 @@ import sys
 import click
 import frappe
 import json
+import os
 
 
 def get_site_from_args():
@@ -49,7 +50,6 @@ def fix_workspace():
         frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", name)
         print(f"  Deleted: {name}")
 
-    # Also clean up any partial matches
     other_ws = frappe.db.sql(
         "SELECT name FROM `tabWorkspace` WHERE name LIKE %s OR name LIKE %s",
         ("%Petrol%", "%PP%"),
@@ -64,86 +64,45 @@ def fix_workspace():
     frappe.db.commit()
     print("  Done!")
 
-    # Step 2: Create workspace
+    # Step 2: Create workspace - load from JSON file (ERPNext format)
     print("\n[2/3] Creating workspace with all links...")
 
-    links = [
-        # Configuration Card
-        {"type": "Card Break", "label": "Configuration", "icon": "octicon octicon-gear", "link_count": 6, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 1},
-        {"type": "Link", "link_type": "DocType", "link_to": "Station Configuration", "label": "Station Configuration", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 2},
-        {"type": "Link", "link_type": "DocType", "link_to": "Tank Master", "label": "Tank Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 3},
-        {"type": "Link", "link_type": "DocType", "link_to": "Nozzle Master", "label": "Nozzle Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 4},
-        {"type": "Link", "link_type": "DocType", "link_to": "Fuel Price Master", "label": "Fuel Price Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 5},
-        {"type": "Link", "link_type": "DocType", "link_to": "Employee Master", "label": "Employee Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 6},
-        {"type": "Link", "link_type": "DocType", "link_to": "Tank Dip Chart", "label": "Tank Dip Chart", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 7},
+    # Try to load from the JSON file first
+    ws_json_path = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)),
+        "pp_management", "workspace", "petrol_pump_management.json"
+    )
 
-        # Operations Card
-        {"type": "Card Break", "label": "Operations", "icon": "octicon octicon-gear", "link_count": 8, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 8},
-        {"type": "Link", "link_type": "DocType", "link_to": "Shift", "label": "Shift", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 9},
-        {"type": "Link", "link_type": "DocType", "link_to": "Shift Nozzle Allotment", "label": "Shift Nozzle Allotment", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 10},
-        {"type": "Link", "link_type": "DocType", "link_to": "Fuel Sale", "label": "Fuel Sale", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 11},
-        {"type": "Link", "link_type": "DocType", "link_to": "Meter Reading", "label": "Meter Reading", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 12},
-        {"type": "Link", "link_type": "DocType", "link_to": "Daily Stock Register", "label": "Daily Stock Register", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 13},
-        {"type": "Link", "link_type": "DocType", "link_to": "Stock Purchase Decantation", "label": "Stock Purchase Decantation", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 14},
-        {"type": "Link", "link_type": "DocType", "link_to": "Trip Voucher", "label": "Trip Voucher", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 15},
-        {"type": "Link", "link_type": "DocType", "link_to": "PP Supplier Master", "label": "PP Supplier Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 16},
+    if os.path.exists(ws_json_path):
+        print(f"  Loading from JSON file: {ws_json_path}")
+        with open(ws_json_path, "r") as f:
+            ws_data = json.load(f)
+    else:
+        print(f"  JSON file not found, using hardcoded data")
+        ws_data = _get_hardcoded_workspace_data()
 
-        # Credit & Sales Card
-        {"type": "Card Break", "label": "Credit & Sales", "icon": "octicon octicon-credit-card", "link_count": 6, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 17},
-        {"type": "Link", "link_type": "DocType", "link_to": "PP Customer", "label": "PP Customer", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 18},
-        {"type": "Link", "link_type": "DocType", "link_to": "Vehicle Master", "label": "Vehicle Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 19},
-        {"type": "Link", "link_type": "DocType", "link_to": "Credit Sale Invoice", "label": "Credit Sale Invoice", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 20},
-        {"type": "Link", "link_type": "DocType", "link_to": "Payment Receipt", "label": "Payment Receipt", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 21},
-        {"type": "Link", "link_type": "DocType", "link_to": "Credit Limit Ledger", "label": "Credit Limit Ledger", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 22},
-        {"type": "Link", "link_type": "DocType", "link_to": "ANPR Scan Log", "label": "ANPR Scan Log", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 23},
-
-        # Finance & HR Card
-        {"type": "Card Break", "label": "Finance & HR", "icon": "octicon octicon-dollar", "link_count": 5, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 24},
-        {"type": "Link", "link_type": "DocType", "link_to": "Expense Entry", "label": "Expense Entry", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 25},
-        {"type": "Link", "link_type": "DocType", "link_to": "Attendance Register", "label": "Attendance Register", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 26},
-        {"type": "Link", "link_type": "DocType", "link_to": "Advance Amount", "label": "Advance Amount", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 27},
-        {"type": "Link", "link_type": "DocType", "link_to": "Bank Deposit", "label": "Bank Deposit", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 28},
-        {"type": "Link", "link_type": "DocType", "link_to": "Day Settlement", "label": "Day Settlement", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 29},
-
-        # Reports Card
-        {"type": "Card Break", "label": "Reports", "icon": "octicon octicon-graph", "link_count": 5, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 30},
-        {"type": "Link", "link_type": "Report", "link_to": "Daily Sales Summary", "label": "Daily Sales Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 31},
-        {"type": "Link", "link_type": "Report", "link_to": "Shift Settlement Report", "label": "Shift Settlement Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 32},
-        {"type": "Link", "link_type": "Report", "link_to": "Stock Variation Report", "label": "Stock Variation Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 33},
-        {"type": "Link", "link_type": "Report", "link_to": "Credit Customer Ageing", "label": "Credit Customer Ageing", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 34},
-        {"type": "Link", "link_type": "Report", "link_to": "GST VAT Summary", "label": "GST VAT Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 35},
-    ]
-
-    content = json.dumps([
-        {"type": "header", "data": {"text": "Petrol Pump Management", "level": 4, "col": 12}},
-        {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Configuration", "level": 4, "col": 12}},
-        {"type": "card", "data": {"card_name": "Configuration", "col": 4}},
-        {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Operations", "level": 4, "col": 12}},
-        {"type": "card", "data": {"card_name": "Operations", "col": 4}},
-        {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Credit & Sales", "level": 4, "col": 12}},
-        {"type": "card", "data": {"card_name": "Credit & Sales", "col": 4}},
-        {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Finance & HR", "level": 4, "col": 12}},
-        {"type": "card", "data": {"card_name": "Finance & HR", "col": 4}},
-        {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Reports", "level": 4, "col": 12}},
-        {"type": "card", "data": {"card_name": "Reports", "col": 4}},
-    ])
-
+    # Build workspace doc from JSON data
     ws = frappe.get_doc({
         "doctype": "Workspace",
-        "label": ws_name,
-        "title": ws_name,
-        "module": "PP Management",
-        "icon": "octicon octicon-fuel",
-        "indicator_color": "orange",
-        "public": 1,
-        "is_hidden": 0,
-        "content": content,
-        "links": links,
+        "label": ws_data["label"],
+        "title": ws_data["title"],
+        "module": ws_data["module"],
+        "icon": ws_data.get("icon", "octicon octicon-file"),
+        "indicator_color": ws_data.get("indicator_color", "blue"),
+        "public": ws_data.get("public", 1),
+        "is_hidden": ws_data.get("is_hidden", 0),
+        "content": ws_data["content"],
+        "links": ws_data["links"],
+        "shortcuts": ws_data.get("shortcuts", []),
+        "charts": ws_data.get("charts", []),
+        "number_cards": ws_data.get("number_cards", []),
+        "custom_blocks": ws_data.get("custom_blocks", []),
+        "quick_lists": ws_data.get("quick_lists", []),
+        "roles": ws_data.get("roles", []),
+        "for_user": ws_data.get("for_user", ""),
+        "parent_page": ws_data.get("parent_page", ""),
+        "restrict_to_domain": ws_data.get("restrict_to_domain", ""),
+        "hide_custom": ws_data.get("hide_custom", 0),
     })
 
     ws.flags.with_module = True
@@ -164,7 +123,6 @@ def fix_workspace():
     print(f"  Workspace exists: {exists}")
     print(f"  Links count: {count}")
 
-    # Print each link
     if count > 0:
         all_links = frappe.db.get_all(
             "Workspace Link",
@@ -183,7 +141,104 @@ def fix_workspace():
         print(f"  SUCCESS! {count} links created.")
     else:
         print("  FAILED! 0 links. Check errors above.")
-    print("  Clear browser cache and refresh the page.")
+    print("  Clear browser cache (Ctrl+Shift+R) and refresh.")
     print("=" * 60)
 
     frappe.destroy()
+
+
+def _get_hardcoded_workspace_data():
+    """Fallback workspace data if JSON file is not found."""
+    content = json.dumps([
+        {"type": "header", "data": {"text": "<span class=\"h4\"><b>Your Shortcuts</b></span>", "col": 12}},
+        {"type": "shortcut", "data": {"shortcut_name": "Station Configuration", "col": 3}},
+        {"type": "shortcut", "data": {"shortcut_name": "Fuel Sale", "col": 3}},
+        {"type": "shortcut", "data": {"shortcut_name": "Shift", "col": 3}},
+        {"type": "shortcut", "data": {"shortcut_name": "PP Customer", "col": 3}},
+        {"type": "spacer", "data": {"col": 12}},
+        {"type": "header", "data": {"text": "<span class=\"h4\"><b>Configuration</b></span>", "col": 12}},
+        {"type": "card", "data": {"card_name": "Configuration", "col": 4}},
+        {"type": "spacer", "data": {"col": 12}},
+        {"type": "header", "data": {"text": "<span class=\"h4\"><b>Operations</b></span>", "col": 12}},
+        {"type": "card", "data": {"card_name": "Operations", "col": 4}},
+        {"type": "spacer", "data": {"col": 12}},
+        {"type": "header", "data": {"text": "<span class=\"h4\"><b>Credit & Sales</b></span>", "col": 12}},
+        {"type": "card", "data": {"card_name": "Credit & Sales", "col": 4}},
+        {"type": "spacer", "data": {"col": 12}},
+        {"type": "header", "data": {"text": "<span class=\"h4\"><b>Finance & HR</b></span>", "col": 12}},
+        {"type": "card", "data": {"card_name": "Finance & HR", "col": 4}},
+        {"type": "spacer", "data": {"col": 12}},
+        {"type": "header", "data": {"text": "<span class=\"h4\"><b>Reports</b></span>", "col": 12}},
+        {"type": "card", "data": {"card_name": "Reports", "col": 4}},
+    ])
+
+    links = [
+        {"hidden": 0, "is_query_report": 0, "label": "Configuration", "link_count": 0, "onboard": 0, "type": "Card Break"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Station Configuration", "link_count": 0, "link_to": "Station Configuration", "link_type": "DocType", "onboard": 1, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Tank Master", "link_count": 0, "link_to": "Tank Master", "link_type": "DocType", "onboard": 1, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Nozzle Master", "link_count": 0, "link_to": "Nozzle Master", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Fuel Price Master", "link_count": 0, "link_to": "Fuel Price Master", "link_type": "DocType", "onboard": 1, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Employee Master", "link_count": 0, "link_to": "Employee Master", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Tank Dip Chart", "link_count": 0, "link_to": "Tank Dip Chart", "link_type": "DocType", "onboard": 0, "type": "Link"},
+
+        {"hidden": 0, "is_query_report": 0, "label": "Operations", "link_count": 0, "onboard": 0, "type": "Card Break"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Shift", "link_count": 0, "link_to": "Shift", "link_type": "DocType", "onboard": 1, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Shift Nozzle Allotment", "link_count": 0, "link_to": "Shift Nozzle Allotment", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Fuel Sale", "link_count": 0, "link_to": "Fuel Sale", "link_type": "DocType", "onboard": 1, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Meter Reading", "link_count": 0, "link_to": "Meter Reading", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Daily Stock Register", "link_count": 0, "link_to": "Daily Stock Register", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Stock Purchase Decantation", "link_count": 0, "link_to": "Stock Purchase Decantation", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Trip Voucher", "link_count": 0, "link_to": "Trip Voucher", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "PP Supplier Master", "link_count": 0, "link_to": "PP Supplier Master", "link_type": "DocType", "onboard": 0, "type": "Link"},
+
+        {"hidden": 0, "is_query_report": 0, "label": "Credit & Sales", "link_count": 0, "onboard": 0, "type": "Card Break"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "PP Customer", "link_count": 0, "link_to": "PP Customer", "link_type": "DocType", "onboard": 1, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Vehicle Master", "link_count": 0, "link_to": "Vehicle Master", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Credit Sale Invoice", "link_count": 0, "link_to": "Credit Sale Invoice", "link_type": "DocType", "onboard": 1, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Payment Receipt", "link_count": 0, "link_to": "Payment Receipt", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Credit Limit Ledger", "link_count": 0, "link_to": "Credit Limit Ledger", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "ANPR Scan Log", "link_count": 0, "link_to": "ANPR Scan Log", "link_type": "DocType", "onboard": 0, "type": "Link"},
+
+        {"hidden": 0, "is_query_report": 0, "label": "Finance & HR", "link_count": 0, "onboard": 0, "type": "Card Break"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Expense Entry", "link_count": 0, "link_to": "Expense Entry", "link_type": "DocType", "onboard": 1, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Attendance Register", "link_count": 0, "link_to": "Attendance Register", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Advance Amount", "link_count": 0, "link_to": "Advance Amount", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Bank Deposit", "link_count": 0, "link_to": "Bank Deposit", "link_type": "DocType", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 0, "label": "Day Settlement", "link_count": 0, "link_to": "Day Settlement", "link_type": "DocType", "onboard": 1, "type": "Link"},
+
+        {"hidden": 0, "is_query_report": 0, "label": "Reports", "link_count": 0, "onboard": 0, "type": "Card Break"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "Daily Sales Summary", "link_count": 0, "link_to": "Daily Sales Summary", "link_type": "Report", "onboard": 1, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "Shift Settlement Report", "link_count": 0, "link_to": "Shift Settlement Report", "link_type": "Report", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "Stock Variation Report", "link_count": 0, "link_to": "Stock Variation Report", "link_type": "Report", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "Credit Customer Ageing", "link_count": 0, "link_to": "Credit Customer Ageing", "link_type": "Report", "onboard": 0, "type": "Link"},
+        {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "GST VAT Summary", "link_count": 0, "link_to": "GST VAT Summary", "link_type": "Report", "onboard": 0, "type": "Link"},
+    ]
+
+    shortcuts = [
+        {"color": "Green", "label": "Station Configuration", "link_to": "Station Configuration", "type": "DocType"},
+        {"color": "Green", "label": "Fuel Sale", "link_to": "Fuel Sale", "type": "DocType"},
+        {"color": "Green", "label": "Shift", "link_to": "Shift", "type": "DocType"},
+        {"color": "Green", "label": "PP Customer", "link_to": "PP Customer", "type": "DocType"},
+    ]
+
+    return {
+        "label": ws_name,
+        "title": ws_name,
+        "module": "PP Management",
+        "icon": "octicon octicon-fuel",
+        "indicator_color": "orange",
+        "public": 1,
+        "is_hidden": 0,
+        "content": content,
+        "links": links,
+        "shortcuts": shortcuts,
+        "charts": [],
+        "number_cards": [],
+        "custom_blocks": [],
+        "quick_lists": [],
+        "roles": [],
+        "for_user": "",
+        "parent_page": "",
+        "restrict_to_domain": "",
+        "hide_custom": 0,
+    }
