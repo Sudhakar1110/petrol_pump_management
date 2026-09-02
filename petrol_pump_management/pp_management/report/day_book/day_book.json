@@ -1,0 +1,17 @@
+{
+ "name": "Day Book",
+ "module": "PP Management",
+ "doctype": "Report",
+ "document_type": "Day Settlement",
+ "report_type": "Script Report",
+ "is_standard": "Yes",
+ "roles": [
+  {"role": "Station Manager"},
+  {"role": "Credit Accounts Officer"},
+  {"role": "Petrol Pump Auditor"}
+ ],
+ "filters": [
+  {"fieldname": "date", "fieldtype": "Date", "label": "Date"}
+ ],
+ "ref_doctype": "Day Settlement"
+}

@@ -40,9 +40,16 @@ scheduler_events = {
         "petrol_pump_management.tasks.daily_stock_reconciliation",
         "petrol_pump_management.tasks.send_credit_reminders",
         "petrol_pump_management.tasks.check_stock_levels",
+        "petrol_pump_management.tasks.auto_block_credit_customers",
+        "petrol_pump_management.tasks.send_expiry_alerts",
+        "petrol_pump_management.tasks.expire_reward_points",
+    ],
+    "weekly": [
+        "petrol_pump_management.tasks.generate_credit_statements",
     ],
     "monthly": [
         "petrol_pump_management.tasks.generate_monthly_reports",
+        "petrol_pump_management.tasks.calculate_late_interest",
     ],
 }
 
@@ -51,5 +58,23 @@ scheduler_events = {
 doc_events = {
     "Fuel Sale": {
         "on_submit": "petrol_pump_management.events.on_fuel_sale_submit",
+        "on_submit": "petrol_pump_management.events.on_fuel_sale_credit_check",
+    },
+    "Credit Sale Invoice": {
+        "on_submit": "petrol_pump_management.events.on_credit_invoice_submit",
+        "on_submit": "petrol_pump_management.events.update_credit_limit_ledger",
+    },
+    "Payment Receipt": {
+        "on_submit": "petrol_pump_management.events.on_payment_receipt_submit",
+        "on_submit": "petrol_pump_management.events.update_credit_limit_on_payment",
+    },
+    "Swipe Settlement": {
+        "on_submit": "petrol_pump_management.events.on_swipe_settlement_submit",
     },
 }
+
+# Fixtures for new DocTypes
+# ------------------
+fixtures += [
+    {"dt": "Commission Rule", "filters": [["is_active", "=", 1]]},
+]

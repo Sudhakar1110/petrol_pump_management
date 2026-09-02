@@ -1,0 +1,27 @@
+{
+ "name": "Reward Points Ledger",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "custom": 0,
+ "autoname": "naming_series:",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "fields": [
+  {"fieldname": "naming_series", "fieldtype": "Select", "label": "Naming Series", "options": "REWARD PTS", "reqd": 1, "default": "REWARD PTS", "set_only_once": 1},
+  {"fieldname": "customer", "fieldtype": "Link", "label": "Customer", "options": "PP Customer", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "transaction_type", "fieldtype": "Select", "label": "Type", "options": "Earned\nRedeemed\nExpired", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "points", "fieldtype": "Int", "label": "Points", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "cb1", "fieldtype": "Column Break"},
+  {"fieldname": "fuel_sale", "fieldtype": "Link", "label": "Related Fuel Sale", "options": "Fuel Sale"},
+  {"fieldname": "transaction_date", "fieldtype": "Date", "label": "Date", "reqd": 1, "default": "Today"},
+  {"fieldname": "running_balance", "fieldtype": "Int", "label": "Running Balance", "read_only": 1},
+  {"fieldname": "remarks", "fieldtype": "Small Text", "label": "Remarks"}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "permlevel": 0, "read": 1, "write": 1, "create": 1, "delete": 1},
+  {"role": "Credit Accounts Officer", "permlevel": 0, "read": 1, "write": 0, "create": 0, "delete": 0}
+ ],
+ "naming_rule": "By \"Naming Series\" field"
+}

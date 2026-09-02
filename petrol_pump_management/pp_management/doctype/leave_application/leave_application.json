@@ -1,0 +1,29 @@
+{
+ "name": "Leave Application",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "custom": 0,
+ "autoname": "naming_series:",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "fields": [
+  {"fieldname": "naming_series", "fieldtype": "Select", "label": "Naming Series", "options": "LEAVE APP", "reqd": 1, "default": "LEAVE APP", "set_only_once": 1},
+  {"fieldname": "employee", "fieldtype": "Link", "label": "Employee", "options": "Employee Master", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "leave_type", "fieldtype": "Select", "label": "Leave Type", "options": "Casual Leave\nSick Leave\nEarned Leave\nUnpaid Leave\nHalf Day", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "cb1", "fieldtype": "Column Break"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date", "reqd": 1},
+  {"fieldname": "total_days", "fieldtype": "Int", "label": "Total Days", "read_only": 1},
+  {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "Draft\nApproved\nRejected", "default": "Draft", "in_list_view": 1},
+  {"fieldname": "reason", "fieldtype": "Small Text", "label": "Reason"},
+  {"fieldname": "approved_by", "fieldtype": "Link", "label": "Approved By", "options": "User", "read_only": 1}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "permlevel": 0, "read": 1, "write": 1, "create": 1, "delete": 1},
+  {"role": "Salesman DSM", "permlevel": 0, "read": 1, "write": 1, "create": 1, "delete": 0}
+ ],
+ "naming_rule": "By \"Naming Series\" field"
+}
