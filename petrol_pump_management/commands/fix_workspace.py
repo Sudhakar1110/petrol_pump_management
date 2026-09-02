@@ -21,10 +21,7 @@ def get_site_from_args():
 
 @click.command("fix-workspace")
 def fix_workspace():
-    """Fix Petrol Pump Management workspace with all card breaks and links.
-
-    Usage: bench --site <site-name> fix-workspace
-    """
+    """Fix Petrol Pump Management workspace with all card breaks and links."""
     site = get_site_from_args()
     if not site:
         print("ERROR: No site specified. Usage: bench --site <site-name> fix-workspace")
@@ -39,13 +36,9 @@ def fix_workspace():
 
     ws_name = "Petrol Pump Management"
 
-    # Step 1: Delete ALL existing workspaces for this module
+    # Step 1: Delete ALL existing workspaces
     print("\n[1/3] Cleaning up all existing workspace entries...")
-    all_ws = frappe.db.get_all(
-        "Workspace",
-        filters={"module": "PP Management"},
-        pluck="name",
-    )
+    all_ws = frappe.db.get_all("Workspace", filters={"module": "PP Management"}, pluck="name")
     for name in all_ws:
         frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", name)
         frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", name)
@@ -53,8 +46,7 @@ def fix_workspace():
 
     other_ws = frappe.db.sql(
         "SELECT name FROM `tabWorkspace` WHERE name LIKE %s OR name LIKE %s",
-        ("%Petrol%", "%PP%"),
-        as_dict=True,
+        ("%Petrol%", "%PP%"), as_dict=True,
     )
     for ws in other_ws:
         if ws.name != ws_name:
@@ -65,13 +57,11 @@ def fix_workspace():
     frappe.db.commit()
     print("  Done!")
 
-    # Step 2: Create workspace with all links
+    # Step 2: Create workspace
     print("\n[2/3] Creating workspace with all links...")
-
     ws_data = _get_workspace_data()
     links_data = ws_data["links"]
 
-    # Create workspace WITHOUT links
     ws = frappe.get_doc({
         "doctype": "Workspace",
         "label": ws_name,
@@ -93,7 +83,6 @@ def fix_workspace():
         "restrict_to_domain": "",
         "hide_custom": 0,
     })
-
     ws.flags.with_module = True
     ws.flags.ignore_links = True
     ws.flags.ignore_validate = True
@@ -162,7 +151,7 @@ def fix_workspace():
 
 
 def _get_workspace_data():
-    """Return complete workspace data with all links."""
+    """Return complete workspace data with ALL links."""
     content = json.dumps([
         {"type": "header", "data": {"text": "<span class=\"h4\"><b>Your Shortcuts</b></span>", "col": 12}},
         {"type": "shortcut", "data": {"shortcut_name": "Station Configuration", "col": 3}},
@@ -210,6 +199,7 @@ def _get_workspace_data():
         {"type": "Link", "label": "Employee Master", "link_type": "DocType", "link_to": "Employee Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Commission Rule", "link_type": "DocType", "link_to": "Commission Rule", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "PP Supplier Master", "link_type": "DocType", "link_to": "PP Supplier Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Notification Settings", "link_type": "DocType", "link_to": "Notification Settings", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
 
         # ── Operations ──
         {"type": "Card Break", "label": "Operations", "hidden": 0, "is_query_report": 0, "link_count": 0, "onboard": 0},
@@ -221,6 +211,9 @@ def _get_workspace_data():
         {"type": "Link", "label": "Stock Purchase Decantation", "link_type": "DocType", "link_to": "Stock Purchase Decantation", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Trip Voucher", "link_type": "DocType", "link_to": "Trip Voucher", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Lube Stock", "link_type": "DocType", "link_to": "Lube Stock", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Evaporation Loss", "link_type": "DocType", "link_to": "Evaporation Loss", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Tanker Expense", "link_type": "DocType", "link_to": "Tanker Expense", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Bank Statement Import", "link_type": "DocType", "link_to": "Bank Statement Import", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Day Settlement", "link_type": "DocType", "link_to": "Day Settlement", "hidden": 0, "is_query_report": 0, "onboard": 1, "dependencies": "", "link_count": 0},
 
         # ── Credit & Sales ──
@@ -229,6 +222,7 @@ def _get_workspace_data():
         {"type": "Link", "label": "Vehicle Master", "link_type": "DocType", "link_to": "Vehicle Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Credit Sale Invoice", "link_type": "DocType", "link_to": "Credit Sale Invoice", "hidden": 0, "is_query_report": 0, "onboard": 1, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Credit Statement", "link_type": "DocType", "link_to": "Credit Statement", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Credit Recovery Entry", "link_type": "DocType", "link_to": "Credit Recovery Entry", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Credit Limit Ledger", "link_type": "DocType", "link_to": "Credit Limit Ledger", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Payment Receipt", "link_type": "DocType", "link_to": "Payment Receipt", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Payment Receipt Invoice", "link_type": "DocType", "link_to": "Payment Receipt Invoice", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
@@ -237,11 +231,15 @@ def _get_workspace_data():
         # ── Finance & HR ──
         {"type": "Card Break", "label": "Finance & HR", "hidden": 0, "is_query_report": 0, "link_count": 0, "onboard": 0},
         {"type": "Link", "label": "Expense Entry", "link_type": "DocType", "link_to": "Expense Entry", "hidden": 0, "is_query_report": 0, "onboard": 1, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Income Entry", "link_type": "DocType", "link_to": "Income Entry", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Attendance Register", "link_type": "DocType", "link_to": "Attendance Register", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Leave Application", "link_type": "DocType", "link_to": "Leave Application", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Overtime Log", "link_type": "DocType", "link_to": "Overtime Log", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Advance Amount", "link_type": "DocType", "link_to": "Advance Amount", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Salary Slip Entry", "link_type": "DocType", "link_to": "Salary Slip Entry", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Commission Payment", "link_type": "DocType", "link_to": "Commission Payment", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Bank Deposit", "link_type": "DocType", "link_to": "Bank Deposit", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Cheque Print Queue", "link_type": "DocType", "link_to": "Cheque Print Queue", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Reward Points Ledger", "link_type": "DocType", "link_to": "Reward Points Ledger", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
 
         # ── Digital Payments ──
@@ -251,8 +249,15 @@ def _get_workspace_data():
 
         # ── Compliance & GST ──
         {"type": "Card Break", "label": "Compliance & GST", "hidden": 0, "is_query_report": 0, "link_count": 0, "onboard": 0},
+        {"type": "Link", "label": "GSTR-1 Filing", "link_type": "DocType", "link_to": "GSTR-1 Filing", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "GSTR-3B Filing", "link_type": "DocType", "link_to": "GSTR-3B Filing", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "GSTR-2A Reconciliation", "link_type": "DocType", "link_to": "GSTR-2A Reconciliation", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "TCS Statement", "link_type": "DocType", "link_to": "TCS Statement", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "TDS Statement", "link_type": "DocType", "link_to": "TDS Statement", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Bank Reconciliation Entry", "link_type": "DocType", "link_to": "Bank Reconciliation Entry", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Tally Export Log", "link_type": "DocType", "link_to": "Tally Export Log", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "SMS Log", "link_type": "DocType", "link_to": "SMS Log", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Email Log", "link_type": "DocType", "link_to": "Email Log", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
 
         # ── Reports ──
         {"type": "Card Break", "label": "Reports", "hidden": 0, "is_query_report": 0, "link_count": 0, "onboard": 0},
@@ -262,11 +267,14 @@ def _get_workspace_data():
         {"type": "Link", "label": "Credit Customer Ageing", "link_type": "Report", "link_to": "Credit Customer Ageing", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "GSTR-1 Summary", "link_type": "Report", "link_to": "GSTR-1 Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "GSTR-3B Summary", "link_type": "Report", "link_to": "GSTR-3B Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "GSTR-2A Reconciliation Report", "link_type": "Report", "link_to": "GSTR-2A Reconciliation Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "TCS TDS Report", "link_type": "Report", "link_to": "TCS TDS Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "HSN Wise Summary", "link_type": "Report", "link_to": "HSN Wise Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "GST VAT Summary", "link_type": "Report", "link_to": "GST VAT Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Employee Commission Report", "link_type": "Report", "link_to": "Employee Commission Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Cash Flow Report", "link_type": "Report", "link_to": "Cash Flow Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "PP Day Book", "link_type": "Report", "link_to": "PP Day Book", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Payroll Summary", "link_type": "Report", "link_to": "Payroll Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Bank Reconciliation Report", "link_type": "Report", "link_to": "Bank Reconciliation Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Tally Export Report", "link_type": "Report", "link_to": "Tally Export Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Profit Loss Statement", "link_type": "Report", "link_to": "Profit Loss Statement", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
@@ -278,6 +286,7 @@ def _get_workspace_data():
         {"type": "Link", "label": "Density Dip Variation", "link_type": "Report", "link_to": "Density Dip Variation", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Employee Attendance Payroll", "link_type": "Report", "link_to": "Employee Attendance Payroll", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Fuel Rate Variation Report", "link_type": "Report", "link_to": "Fuel Rate Variation Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "Report Export", "link_type": "Report", "link_to": "Report Export", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
     ]
 
     return {

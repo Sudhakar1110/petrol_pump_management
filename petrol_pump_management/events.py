@@ -3,8 +3,14 @@ from frappe.utils import add_days, today, getdate, flt
 
 
 def on_fuel_sale_submit(doc, method):
-    """Handle Fuel Sale submission - create credit invoice if credit sale."""
+    """Handle Fuel Sale submission - credit check, credit invoice, reward points, SMS."""
+    # Block credit sale if customer has exceeded limit
     if doc.payment_mode == "Credit" and doc.customer:
+        customer = frappe.db.get_value("PP Customer", doc.customer, ["credit_limit", "is_blocked"])
+        if customer and customer.is_blocked:
+            frappe.throw(f"Credit sale blocked: Customer {doc.customer} has exceeded credit limit.")
+
+        # Auto-create credit sale invoice
         try:
             invoice = frappe.new_doc("Credit Sale Invoice")
             invoice.customer = doc.customer
@@ -14,8 +20,17 @@ def on_fuel_sale_submit(doc, method):
             invoice.due_date = add_days(doc.sale_date, 30)
             invoice.status = "Unpaid"
             invoice.insert(ignore_permissions=True)
+            invoice.submit()
+
+            # Send SMS for credit sale
+            _send_credit_sale_sms(doc.customer, doc.name, doc.amount, doc.qty_litres,
+                                  doc.fuel_type, invoice.balance_amount)
         except Exception:
             pass
+
+    # Send SMS for cash sale
+    if doc.payment_mode in ("Cash", "Card", "UPI") and doc.customer:
+        _send_cash_sale_sms(doc.customer, doc.name, doc.amount, doc.payment_mode)
 
     # Award reward points (1 point per 100 rupees)
     if doc.customer and doc.amount:
@@ -34,63 +49,100 @@ def on_fuel_sale_submit(doc, method):
                 pass
 
 
-def on_fuel_sale_credit_check(doc, method):
-    """Block credit sale if customer has exceeded limit."""
-    if doc.payment_mode == "Credit" and doc.customer:
-        customer = frappe.db.get_value("PP Customer", doc.customer, ["credit_limit", "is_blocked"])
-        if customer and customer.is_blocked:
-            frappe.throw(f"Credit sale blocked: Customer {doc.customer} has exceeded credit limit.")
-
-
 def on_credit_invoice_submit(doc, method):
-    """Handle Credit Sale Invoice submission."""
-    # Update credit limit ledger
-    _update_credit_limit(doc.customer)
-
-    # Send SMS notification
-    try:
-        customer_mobile = frappe.db.get_value("PP Customer", doc.customer, "mobile")
-        if customer_mobile:
-            frappe.sendmail(
-                recipients=[customer_mobile],
-                subject=f"Credit Sale Invoice {doc.name}",
-                message=f"Dear Customer,\n\nA credit sale of {frappe.format_doc(doc.amount, {'fieldtype': 'Currency'})} has been recorded against your account.\n\nDue Date: {doc.due_date}\nInvoice: {doc.name}\n\nPlease clear the dues by the due date.\n\nThank you.",
-            )
-    except Exception:
-        pass
-
-
-def update_credit_limit_ledger(doc, method):
-    """Update credit limit ledger on invoice submit."""
+    """Handle Credit Sale Invoice submission - update limit, send SMS."""
     _update_credit_limit(doc.customer)
 
 
 def on_payment_receipt_submit(doc, method):
-    """Handle Payment Receipt submission."""
-    # Update related credit invoice status
+    """Handle Payment Receipt submission - update limit, send SMS."""
     _update_credit_limit(doc.customer)
-
-    # Send SMS confirmation
-    try:
-        customer_mobile = frappe.db.get_value("PP Customer", doc.customer, "mobile")
-        if customer_mobile:
-            frappe.sendmail(
-                recipients=[customer_mobile],
-                subject=f"Payment Received - {doc.name}",
-                message=f"Dear Customer,\n\nPayment of {frappe.format_doc(doc.amount_received, {'fieldtype': 'Currency'})} received successfully.\n\nReceipt: {doc.name}\nMode: {doc.payment_mode}\n\nThank you.",
-            )
-    except Exception:
-        pass
-
-
-def update_credit_limit_on_payment(doc, method):
-    """Update credit limit ledger when payment is received."""
-    _update_credit_limit(doc.customer)
+    _send_payment_receipt_sms(doc.customer, doc.name, doc.amount, doc.mode)
 
 
 def on_swipe_settlement_submit(doc, method):
     """Handle Swipe Settlement submission."""
-    doc.difference = (doc.total_collected or 0) - (doc.total_sale_amount or 0)
+    pass
+
+
+def _send_credit_sale_sms(customer, sale_name, amount, qty, fuel_type, balance):
+    """Send SMS on credit sale"""
+    try:
+        settings = frappe.get_single("Notification Settings")
+        if not settings.enable_sms:
+            return
+        mobile = frappe.db.get_value("PP Customer", customer, "mobile")
+        station = frappe.db.get_single_value("Station Configuration", "station_name") or "Station"
+        if mobile and settings.sms_credit_sale:
+            msg = settings.sms_credit_sale.format(
+                customer=customer, amount=amount, qty=qty,
+                fuel_type=fuel_type or "", balance=balance or 0, station=station
+            )
+            sms = frappe.get_doc({
+                "doctype": "SMS Log",
+                "recipient": mobile,
+                "message_type": "Credit Sale",
+                "message": msg,
+                "reference_doctype": "Fuel Sale",
+                "reference_name": sale_name,
+            })
+            sms.insert(ignore_permissions=True)
+    except Exception:
+        pass
+
+
+def _send_cash_sale_sms(customer, sale_name, amount, payment_mode):
+    """Send SMS on cash/card/UPI sale"""
+    try:
+        settings = frappe.get_single("Notification Settings")
+        if not settings.enable_sms:
+            return
+        mobile = frappe.db.get_value("PP Customer", customer, "mobile")
+        station = frappe.db.get_single_value("Station Configuration", "station_name") or "Station"
+        if mobile:
+            msg = f"Dear {customer}, payment of Rs.{amount} received via {payment_mode}. Thank you! - {station}"
+            sms = frappe.get_doc({
+                "doctype": "SMS Log",
+                "recipient": mobile,
+                "message_type": "Payment Receipt",
+                "message": msg,
+                "reference_doctype": "Fuel Sale",
+                "reference_name": sale_name,
+            })
+            sms.insert(ignore_permissions=True)
+    except Exception:
+        pass
+
+
+def _send_payment_receipt_sms(customer, receipt_name, amount, mode):
+    """Send SMS on payment receipt"""
+    try:
+        settings = frappe.get_single("Notification Settings")
+        if not settings.enable_sms:
+            return
+        mobile = frappe.db.get_value("PP Customer", customer, "mobile")
+        balance = frappe.db.sql("""
+            SELECT IFNULL(SUM(balance_amount), 0) as balance
+            FROM `tabCredit Sale Invoice`
+            WHERE customer = %s AND docstatus = 1 AND balance_amount > 0
+        """, (customer,), as_dict=True)
+        station = frappe.db.get_single_value("Station Configuration", "station_name") or "Station"
+        if mobile and settings.sms_payment_receipt:
+            msg = settings.sms_payment_receipt.format(
+                customer=customer, amount=amount, mode=mode or "Cash",
+                balance=balance[0].balance if balance else 0, station=station
+            )
+            sms = frappe.get_doc({
+                "doctype": "SMS Log",
+                "recipient": mobile,
+                "message_type": "Payment Receipt",
+                "message": msg,
+                "reference_doctype": "Payment Receipt",
+                "reference_name": receipt_name,
+            })
+            sms.insert(ignore_permissions=True)
+    except Exception:
+        pass
 
 
 def _update_credit_limit(customer):
@@ -103,18 +155,12 @@ def _update_credit_limit(customer):
             return
 
         total_unpaid = frappe.db.sql("""
-            SELECT IFNULL(SUM(amount), 0) as total
+            SELECT IFNULL(SUM(balance_amount), 0) as total
             FROM `tabCredit Sale Invoice`
             WHERE customer = %s AND docstatus = 1 AND status != 'Paid'
         """, (customer,), as_dict=True)
 
-        total_paid = frappe.db.sql("""
-            SELECT IFNULL(SUM(amount_received), 0) as total
-            FROM `tabPayment Receipt`
-            WHERE customer = %s AND docstatus = 1
-        """, (customer,), as_dict=True)
-
-        used = (total_unpaid[0].total or 0) - (total_paid[0].total or 0)
+        used = total_unpaid[0].total or 0
         available = (cl.limit_amount or 0) - used
 
         frappe.db.set_value("Credit Limit Ledger", cl.name, {

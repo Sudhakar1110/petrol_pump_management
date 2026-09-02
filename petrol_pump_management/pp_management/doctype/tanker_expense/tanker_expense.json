@@ -1,0 +1,36 @@
+{
+ "name": "Tanker Expense",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "trip_voucher", "fieldtype": "Link", "label": "Trip Voucher", "options": "Trip Voucher", "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "tanker_number", "fieldtype": "Data", "label": "Tanker Number", "in_list_view": 1},
+  {"fieldname": "supplier", "fieldtype": "Link", "label": "Supplier", "options": "PP Supplier Master", "in_list_view": 1},
+  {"fieldname": "fuel_type", "fieldtype": "Select", "label": "Fuel Type", "options": "\nPetrol\nDiesel\nPremium", "in_list_view": 1},
+  {"fieldname": "quantity_received", "fieldtype": "Currency", "label": "Quantity Received (L)", "in_list_view": 1},
+  {"fieldname": "purchase_amount", "fieldtype": "Currency", "label": "Purchase Amount", "in_list_view": 1},
+  {"fieldname": "transport_cost", "fieldtype": "Currency", "label": "Transport Cost"},
+  {"fieldname": "loading_unloading", "fieldtype": "Currency", "label": "Loading/Unloading Cost"},
+  {"fieldname": "toll_charges", "fieldtype": "Currency", "label": "Toll Charges"},
+  {"fieldname": "other_charges", "fieldtype": "Currency", "label": "Other Charges"},
+  {"fieldname": "total_cost", "fieldtype": "Currency", "label": "Total Cost", "in_list_view": 1},
+  {"fieldname": "expected_sale_value", "fieldtype": "Currency", "label": "Expected Sale Value"},
+  {"fieldname": "actual_sale_value", "fieldtype": "Currency", "label": "Actual Sale Value"},
+  {"fieldname": "profit_loss", "fieldtype": "Currency", "label": "Profit/Loss", "in_list_view": 1},
+  {"fieldname": "margin_percentage", "fieldtype": "Percent", "label": "Margin %"},
+  {"fieldname": "arrival_date", "fieldtype": "Date", "label": "Arrival Date", "in_list_view": 1},
+  {"fieldname": "remarks", "fieldtype": "Small Text", "label": "Remarks"}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "read": 1, "write": 1, "create": 1},
+  {"role": "Petrol Pump Auditor", "read": 1},
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1}
+ ],
+ "sort_field": "arrival_date",
+ "sort_order": "DESC",
+ "title_field": "tanker_number",
+ "search_fields": "tanker_number,supplier"
+}

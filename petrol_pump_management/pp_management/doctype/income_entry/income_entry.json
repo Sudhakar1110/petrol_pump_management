@@ -1,0 +1,29 @@
+{
+ "name": "Income Entry",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "income_date", "fieldtype": "Date", "label": "Income Date", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "income_type", "fieldtype": "Select", "label": "Income Type", "options": "\nFuel Sales\nNon-Fuel Income\nCommission\nInterest\nInvestment Return\nOther", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "source", "fieldtype": "Data", "label": "Source / Description", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "amount", "fieldtype": "Currency", "label": "Amount", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "payment_mode", "fieldtype": "Select", "label": "Payment Mode", "options": "\nCash\nBank Transfer\nUPI\nCheque"},
+  {"fieldname": "reference_no", "fieldtype": "Data", "label": "Reference Number"},
+  {"fieldname": "category", "fieldtype": "Data", "label": "Category"},
+  {"fieldname": "is_recurring", "fieldtype": "Check", "label": "Recurring Income"},
+  {"fieldname": "recurring_frequency", "fieldtype": "Select", "label": "Frequency", "options": "\nMonthly\nQuarterly\nYearly"},
+  {"fieldname": "linked_reference", "fieldtype": "Data", "label": "Linked Reference"},
+  {"fieldname": "remarks", "fieldtype": "Small Text", "label": "Remarks"}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "read": 1, "write": 1, "create": 1},
+  {"role": "Credit Accounts Officer", "read": 1},
+  {"role": "Petrol Pump Auditor", "read": 1}
+ ],
+ "sort_field": "income_date",
+ "sort_order": "DESC",
+ "search_fields": "source,income_type"
+}

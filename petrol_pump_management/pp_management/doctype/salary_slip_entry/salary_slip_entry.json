@@ -1,0 +1,40 @@
+{
+ "name": "Salary Slip Entry",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 1,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "employee", "fieldtype": "Link", "label": "Employee", "options": "Employee Master", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "employee_name", "fieldtype": "Data", "label": "Employee Name", "in_list_view": 1, "fetch_from": "employee.employee_name"},
+  {"fieldname": "pay_period", "fieldtype": "Data", "label": "Pay Period (MM-YYYY)", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "days_worked", "fieldtype": "Int", "label": "Days Worked", "in_list_view": 1},
+  {"fieldname": "total_hours", "fieldtype": "Float", "label": "Total Hours"},
+  {"fieldname": "basic_salary", "fieldtype": "Currency", "label": "Basic Salary", "in_list_view": 1},
+  {"fieldname": "overtime_hours", "fieldtype": "Float", "label": "Overtime Hours"},
+  {"fieldname": "overtime_pay", "fieldtype": "Currency", "label": "Overtime Pay"},
+  {"fieldname": "commission_earned", "fieldtype": "Currency", "label": "Commission Earned"},
+  {"fieldname": "incentives", "fieldtype": "Currency", "label": "Incentives"},
+  {"fieldname": "total_earnings", "fieldtype": "Currency", "label": "Total Earnings", "in_list_view": 1},
+  {"fieldname": "deductions_section", "fieldtype": "Section Break", "label": "Deductions"},
+  {"fieldname": "advance_deduction", "fieldtype": "Currency", "label": "Advance Deduction"},
+  {"fieldname": "loan_deduction", "fieldtype": "Currency", "label": "Loan Deduction"},
+  {"fieldname": "pf_deduction", "fieldtype": "Currency", "label": "PF Deduction"},
+  {"fieldname": "esi_deduction", "fieldtype": "Currency", "label": "ESI Deduction"},
+  {"fieldname": "professional_tax", "fieldtype": "Currency", "label": "Professional Tax"},
+  {"fieldname": "total_deductions", "fieldtype": "Currency", "label": "Total Deductions", "in_list_view": 1},
+  {"fieldname": "net_salary", "fieldtype": "Currency", "label": "Net Salary", "in_list_view": 1},
+  {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "\nDraft\nSubmitted\nPaid\nCancelled", "default": "Draft", "in_list_view": 1},
+  {"fieldname": "payment_date", "fieldtype": "Date", "label": "Payment Date"},
+  {"fieldname": "payment_mode", "fieldtype": "Select", "label": "Payment Mode", "options": "\nCash\nBank Transfer\nUPI"}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "read": 1, "write": 1, "create": 1, "submit": 1},
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "title_field": "employee_name",
+ "search_fields": "employee_name,pay_period"
+}

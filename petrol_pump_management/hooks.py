@@ -43,13 +43,20 @@ scheduler_events = {
         "petrol_pump_management.tasks.auto_block_credit_customers",
         "petrol_pump_management.tasks.send_expiry_alerts",
         "petrol_pump_management.tasks.expire_reward_points",
+        "petrol_pump_management.tasks.send_limit_breach_sms",
+        "petrol_pump_management.tasks.auto_calculate_evaporation",
+        "petrol_pump_management.tasks.send_lube_expiry_alerts",
     ],
     "weekly": [
         "petrol_pump_management.tasks.generate_credit_statements",
+        "petrol_pump_management.tasks.send_weekly_credit_email",
     ],
     "monthly": [
         "petrol_pump_management.tasks.generate_monthly_reports",
         "petrol_pump_management.tasks.calculate_late_interest",
+        "petrol_pump_management.tasks.auto_generate_payroll",
+        "petrol_pump_management.tasks.auto_generate_commission",
+        "petrol_pump_management.tasks.send_monthly_statement_email",
     ],
 }
 
@@ -58,15 +65,12 @@ scheduler_events = {
 doc_events = {
     "Fuel Sale": {
         "on_submit": "petrol_pump_management.events.on_fuel_sale_submit",
-        "on_submit": "petrol_pump_management.events.on_fuel_sale_credit_check",
     },
     "Credit Sale Invoice": {
         "on_submit": "petrol_pump_management.events.on_credit_invoice_submit",
-        "on_submit": "petrol_pump_management.events.update_credit_limit_ledger",
     },
     "Payment Receipt": {
         "on_submit": "petrol_pump_management.events.on_payment_receipt_submit",
-        "on_submit": "petrol_pump_management.events.update_credit_limit_on_payment",
     },
     "Swipe Settlement": {
         "on_submit": "petrol_pump_management.events.on_swipe_settlement_submit",

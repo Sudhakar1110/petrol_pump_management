@@ -1,0 +1,30 @@
+{
+ "name": "Bank Statement Import",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "bank_name", "fieldtype": "Data", "label": "Bank Name", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "account_number", "fieldtype": "Data", "label": "Account Number"},
+  {"fieldname": "statement_date", "fieldtype": "Date", "label": "Statement Date", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "opening_balance", "fieldtype": "Currency", "label": "Opening Balance"},
+  {"fieldname": "closing_balance", "fieldtype": "Currency", "label": "Closing Balance"},
+  {"fieldname": "statement_file", "fieldtype": "Attach", "label": "Upload Bank Statement (CSV)", "reqd": 1},
+  {"fieldname": "transactions_section", "fieldtype": "Section Break", "label": "Parsed Transactions"},
+  {"fieldname": "transactions", "fieldtype": "Table", "label": "Bank Transactions", "options": "Bank Statement Transaction"},
+  {"fieldname": "total_credit", "fieldtype": "Currency", "label": "Total Credits"},
+  {"fieldname": "total_debit", "fieldtype": "Currency", "label": "Total Debits"},
+  {"fieldname": "matched_count", "fieldtype": "Int", "label": "Matched Transactions"},
+  {"fieldname": "unmatched_count", "fieldtype": "Int", "label": "Unmatched Transactions"},
+  {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "\nUploaded\nParsed\nMatched\nReconciled", "default": "Uploaded", "in_list_view": 1}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "read": 1, "write": 1, "create": 1},
+  {"role": "Credit Accounts Officer", "read": 1, "write": 1},
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1}
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC"
+}

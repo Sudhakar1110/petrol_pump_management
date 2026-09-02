@@ -1,0 +1,18 @@
+{
+ "name": "Bank Statement Transaction",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "istable": 1,
+ "fields": [
+  {"fieldname": "transaction_date", "fieldtype": "Date", "label": "Date", "in_list_view": 1},
+  {"fieldname": "description", "fieldtype": "Data", "label": "Description", "in_list_view": 1},
+  {"fieldname": "debit", "fieldtype": "Currency", "label": "Debit", "in_list_view": 1},
+  {"fieldname": "credit", "fieldtype": "Currency", "label": "Credit", "in_list_view": 1},
+  {"fieldname": "reference_no", "fieldtype": "Data", "label": "Reference No"},
+  {"fieldname": "match_status", "fieldtype": "Select", "label": "Status", "options": "\nMatched\nUnmatched", "in_list_view": 1},
+  {"fieldname": "matched_reference", "fieldtype": "Data", "label": "Matched To"}
+ ],
+ "permissions": []
+}

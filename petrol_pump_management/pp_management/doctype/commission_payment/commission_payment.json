@@ -1,0 +1,32 @@
+{
+ "name": "Commission Payment",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 1,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "employee", "fieldtype": "Link", "label": "Employee", "options": "Employee Master", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "employee_name", "fieldtype": "Data", "label": "Employee Name", "fetch_from": "employee.employee_name", "in_list_view": 1},
+  {"fieldname": "commission_period", "fieldtype": "Data", "label": "Period (MM-YYYY)", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "total_fuel_sold", "fieldtype": "Currency", "label": "Total Fuel Sold (L)", "in_list_view": 1},
+  {"fieldname": "total_sales_value", "fieldtype": "Currency", "label": "Total Sales Value", "in_list_view": 1},
+  {"fieldname": "commission_rate", "fieldtype": "Float", "label": "Commission Rate (Rs/L)"},
+  {"fieldname": "commission_amount", "fieldtype": "Currency", "label": "Commission Amount", "in_list_view": 1},
+  {"fieldname": "bonus", "fieldtype": "Currency", "label": "Bonus"},
+  {"fieldname": "deductions", "fieldtype": "Currency", "label": "Deductions"},
+  {"fieldname": "net_commission", "fieldtype": "Currency", "label": "Net Commission", "in_list_view": 1},
+  {"fieldname": "payment_status", "fieldtype": "Select", "label": "Payment Status", "options": "\nPending\nPaid\nPartially Paid", "default": "Pending", "in_list_view": 1},
+  {"fieldname": "payment_date", "fieldtype": "Date", "label": "Payment Date"},
+  {"fieldname": "payment_mode", "fieldtype": "Select", "label": "Payment Mode", "options": "\nCash\nBank Transfer\nUPI"},
+  {"fieldname": "rules_section", "fieldtype": "Section Break", "label": "Commission Rules Applied"},
+  {"fieldname": "rules_detail", "fieldtype": "Small Text", "label": "Rules Detail"}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "read": 1, "write": 1, "create": 1, "submit": 1},
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1}
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "title_field": "employee_name"
+}

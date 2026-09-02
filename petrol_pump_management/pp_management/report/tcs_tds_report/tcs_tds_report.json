@@ -1,0 +1,18 @@
+{
+ "name": "TCS TDS Report",
+ "module": "PP Management",
+ "doctype": "Report",
+ "document_type": "TCS Statement",
+ "report_type": "Script Report",
+ "is_standard": "Yes",
+ "roles": [
+  {"role": "Compliance Officer"},
+  {"role": "Petrol Pump Auditor"}
+ ],
+ "filters": [
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date"},
+  {"fieldname": "tax_type", "fieldtype": "Select", "label": "Tax Type", "options": "\nTCS\nTDS\nBoth"}
+ ],
+ "ref_doctype": "TCS Statement"
+}

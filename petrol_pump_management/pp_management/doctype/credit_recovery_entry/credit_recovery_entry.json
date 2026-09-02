@@ -1,0 +1,32 @@
+{
+ "name": "Credit Recovery Entry",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 1,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "customer", "fieldtype": "Link", "label": "Customer", "options": "PP Customer", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "vehicle", "fieldtype": "Link", "label": "Vehicle", "options": "Vehicle Master", "in_list_view": 1},
+  {"fieldname": "recovery_date", "fieldtype": "Date", "label": "Recovery Date", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "recovery_type", "fieldtype": "Select", "label": "Recovery Type", "options": "\nCall\nVisit\nSMS\nLetter\nLegal Notice", "in_list_view": 1},
+  {"fieldname": "outstanding_amount", "fieldtype": "Currency", "label": "Outstanding Amount", "in_list_view": 1},
+  {"fieldname": "amount_collected", "fieldtype": "Currency", "label": "Amount Collected", "in_list_view": 1},
+  {"fieldname": "collection_mode", "fieldtype": "Select", "label": "Collection Mode", "options": "\nCash\nBank Transfer\nUPI\nCheque"},
+  {"fieldname": "reference_no", "fieldtype": "Data", "label": "Reference Number"},
+  {"fieldname": "next_followup_date", "fieldtype": "Date", "label": "Next Follow-up Date"},
+  {"fieldname": "recovery_status", "fieldtype": "Select", "label": "Recovery Status", "options": "\nPending\nPartial\nFull\nEscalated", "default": "Pending", "in_list_view": 1},
+  {"fieldname": "remarks", "fieldtype": "Small Text", "label": "Remarks"},
+  {"fieldname": "recovered_by", "fieldtype": "Link", "label": "Recovered By", "options": "Employee Master"},
+  {"fieldname": "ageing_days", "fieldtype": "Int", "label": "Overdue Days"}
+ ],
+ "permissions": [
+  {"role": "Recovery Officer", "read": 1, "write": 1, "create": 1, "submit": 1},
+  {"role": "Station Manager", "read": 1, "write": 1},
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "title_field": "customer",
+ "search_fields": "customer,vehicle,recovery_type"
+}

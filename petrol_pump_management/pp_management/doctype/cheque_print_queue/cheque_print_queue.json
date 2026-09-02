@@ -1,0 +1,31 @@
+{
+ "name": "Cheque Print Queue",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "payee_name", "fieldtype": "Data", "label": "Payee Name", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "cheque_date", "fieldtype": "Date", "label": "Cheque Date", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "amount", "fieldtype": "Currency", "label": "Amount", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "amount_in_words", "fieldtype": "Data", "label": "Amount in Words"},
+  {"fieldname": "bank_name", "fieldtype": "Data", "label": "Bank Name", "in_list_view": 1},
+  {"fieldname": "account_number", "fieldtype": "Data", "label": "Account Number"},
+  {"fieldname": "cheque_number", "fieldtype": "Data", "label": "Cheque Number", "in_list_view": 1},
+  {"fieldname": "reference_type", "fieldtype": "Select", "label": "Payment For", "options": "\nPayment Receipt\nExpense\nAdvance\nSalary\nCommission\nOther", "in_list_view": 1},
+  {"fieldname": "reference_name", "fieldtype": "Data", "label": "Reference Name"},
+  {"fieldname": "purpose", "fieldtype": "Small Text", "label": "Purpose / Remarks"},
+  {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "\nPending\nPrinted\nCancelled", "default": "Pending", "in_list_view": 1},
+  {"fieldname": "printed_on", "fieldtype": "Datetime", "label": "Printed On"}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "read": 1, "write": 1, "create": 1},
+  {"role": "Credit Accounts Officer", "read": 1, "write": 1},
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1}
+ ],
+ "sort_field": "cheque_date",
+ "sort_order": "DESC",
+ "title_field": "payee_name",
+ "search_fields": "payee_name,cheque_number,purpose"
+}

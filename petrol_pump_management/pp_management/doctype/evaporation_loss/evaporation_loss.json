@@ -1,0 +1,31 @@
+{
+ "name": "Evaporation Loss",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "tank", "fieldtype": "Link", "label": "Tank", "options": "Tank Master", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "date", "fieldtype": "Date", "label": "Date", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "fuel_type", "fieldtype": "Select", "label": "Fuel Type", "options": "\nPetrol\nDiesel\nPremium", "in_list_view": 1},
+  {"fieldname": "opening_stock", "fieldtype": "Currency", "label": "Opening Stock (L)"},
+  {"fieldname": "closing_stock", "fieldtype": "Currency", "label": "Closing Stock (L)"},
+  {"fieldname": "total_sales", "fieldtype": "Currency", "label": "Total Sales (L)"},
+  {"fieldname": "expected_stock", "fieldtype": "Currency", "label": "Expected Stock (L)"},
+  {"fieldname": "actual_stock", "fieldtype": "Currency", "label": "Actual Stock (L)"},
+  {"fieldname": "evaporation_loss", "fieldtype": "Currency", "label": "Evaporation Loss (L)", "in_list_view": 1},
+  {"fieldname": "loss_percentage", "fieldtype": "Percent", "label": "Loss %", "in_list_view": 1},
+  {"fieldname": "loss_value", "fieldtype": "Currency", "label": "Loss Value (Rs.)", "in_list_view": 1},
+  {"fieldname": "remarks", "fieldtype": "Small Text", "label": "Remarks"},
+  {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "\nNormal\nAbove Threshold\nCritical", "default": "Normal", "in_list_view": 1}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "read": 1, "write": 1, "create": 1},
+  {"role": "Petrol Pump Auditor", "read": 1},
+  {"role": "Compliance Officer", "read": 1}
+ ],
+ "sort_field": "date",
+ "sort_order": "DESC",
+ "search_fields": "tank,fuel_type"
+}

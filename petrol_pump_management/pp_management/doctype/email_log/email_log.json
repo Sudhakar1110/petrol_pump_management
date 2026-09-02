@@ -1,0 +1,27 @@
+{
+ "name": "Email Log",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "recipient_email", "fieldtype": "Data", "label": "Recipient Email", "reqd": 1, "options": "Email", "in_list_view": 1},
+  {"fieldname": "subject", "fieldtype": "Data", "label": "Subject", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "email_type", "fieldtype": "Select", "label": "Email Type", "options": "\nCredit Statement\nPayment Receipt\nMonthly Summary\nCustom", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "reference_doctype", "fieldtype": "Link", "label": "Reference DocType", "options": "DocType"},
+  {"fieldname": "reference_name", "fieldtype": "Data", "label": "Reference Name"},
+  {"fieldname": "message_html", "fieldtype": "Code", "label": "Email HTML", "options": "HTML"},
+  {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "\nPending\nSent\nFailed", "default": "Pending", "in_list_view": 1},
+  {"fieldname": "sent_on", "fieldtype": "Datetime", "label": "Sent On"},
+  {"fieldname": "error_message", "fieldtype": "Small Text", "label": "Error Message"},
+  {"fieldname": "attachment_name", "fieldtype": "Data", "label": "Attachment"}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "read": 1, "write": 1, "create": 1},
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "title_field": "subject"
+}

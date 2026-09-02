@@ -1,0 +1,28 @@
+{
+ "name": "SMS Log",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "issingle": 0,
+ "fields": [
+  {"fieldname": "recipient", "fieldtype": "Data", "label": "Recipient Mobile", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "message_type", "fieldtype": "Select", "label": "Message Type", "options": "\nCredit Sale\nPayment Receipt\nCredit Statement\nLimit Breach\nAdvance Reminder\nRenewal Alert\nBirthday\nCustom", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "reference_doctype", "fieldtype": "Link", "label": "Reference DocType", "options": "DocType", "in_list_view": 1},
+  {"fieldname": "reference_name", "fieldtype": "Data", "label": "Reference Name", "in_list_view": 1},
+  {"fieldname": "message", "fieldtype": "Small Text", "label": "Message Content", "reqd": 1},
+  {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "\nPending\nSent\nFailed", "default": "Pending", "in_list_view": 1},
+  {"fieldname": "sent_on", "fieldtype": "Datetime", "label": "Sent On", "in_list_view": 1},
+  {"fieldname": "error_message", "fieldtype": "Small Text", "label": "Error Message"},
+  {"fieldname": "gateway_response", "fieldtype": "Small Text", "label": "Gateway Response"}
+ ],
+ "permissions": [
+  {"role": "Station Manager", "read": 1, "write": 1, "create": 1, "delete": 1},
+  {"role": "Credit Accounts Officer", "read": 1},
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "title_field": "recipient",
+ "search_fields": "recipient,message_type"
+}

@@ -1,0 +1,35 @@
+{
+ "name": "Notification Settings",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "issingle": 1,
+ "fields": [
+  {"fieldname": "sb_sms", "fieldtype": "Section Break", "label": "SMS Gateway Configuration"},
+  {"fieldname": "enable_sms", "fieldtype": "Check", "label": "Enable SMS", "default": 0},
+  {"fieldname": "sms_gateway", "fieldtype": "Select", "label": "SMS Gateway", "options": "\nTwilio\nMSG91\nCustom HTTP API"},
+  {"fieldname": "twilio_account_sid", "fieldtype": "Data", "label": "Twilio Account SID", "depends_on": "eval:enable_sms && sms_gateway=='Twilio'"},
+  {"fieldname": "twilio_auth_token", "fieldtype": "Password", "label": "Twilio Auth Token", "depends_on": "eval:enable_sms && sms_gateway=='Twilio'"},
+  {"fieldname": "twilio_from_number", "fieldtype": "Data", "label": "Twilio From Number", "depends_on": "eval:enable_sms && sms_gateway=='Twilio'"},
+  {"fieldname": "msg91_authkey", "fieldtype": "Password", "label": "MSG91 Auth Key", "depends_on": "eval:enable_sms && sms_gateway=='MSG91'"},
+  {"fieldname": "msg91_number", "fieldtype": "Data", "label": "MSG91 Sender Number", "depends_on": "eval:enable_sms && sms_gateway=='MSG91'"},
+  {"fieldname": "msg91_country", "fieldtype": "Data", "label": "Country Code", "default": "91", "depends_on": "eval:enable_sms && sms_gateway=='MSG91'"},
+  {"fieldname": "custom_sms_api_url", "fieldtype": "Data", "label": "Custom API URL", "depends_on": "eval:enable_sms && sms_gateway=='Custom HTTP API'"},
+  {"fieldname": "custom_sms_api_key", "fieldtype": "Password", "label": "Custom API Key", "depends_on": "eval:enable_sms && sms_gateway=='Custom HTTP API'"},
+  {"fieldname": "custom_sms_payload_format", "fieldtype": "Small Text", "label": "Payload Format (JSON)", "depends_on": "eval:enable_sms && sms_gateway=='Custom HTTP API'", "description": "Use {to}, {message}, {api_key} as placeholders"},
+  {"fieldname": "sb_email", "fieldtype": "Section Break", "label": "Email Configuration"},
+  {"fieldname": "enable_email", "fieldtype": "Check", "label": "Enable Email Notifications", "default": 0},
+  {"fieldname": "email_sender_name", "fieldtype": "Data", "label": "Sender Name", "default": "Petrol Pump Management"},
+  {"fieldname": "sb_templates", "fieldtype": "Section Break", "label": "Message Templates"},
+  {"fieldname": "sms_credit_sale", "fieldtype": "Small Text", "label": "SMS: Credit Sale", "default": "Dear {customer}, your fuel purchase of Rs.{amount} ({qty}L {fuel_type}) has been recorded. Outstanding: Rs.{balance}. - {station}"},
+  {"fieldname": "sms_payment_receipt", "fieldtype": "Small Text", "label": "SMS: Payment Receipt", "default": "Dear {customer}, payment of Rs.{amount} received via {mode}. Outstanding: Rs.{balance}. Thank you! - {station}"},
+  {"fieldname": "sms_limit_breach", "fieldtype": "Small Text", "label": "SMS: Limit Breach", "default": "Dear {customer}, your credit limit of Rs.{limit} has been exceeded. Outstanding: Rs.{balance}. Please clear dues. - {station}"},
+  {"fieldname": "sms_advance_reminder", "fieldtype": "Small Text", "label": "SMS: Advance Reminder", "default": "Dear {employee}, your advance of Rs.{amount} will be deducted from this month's salary. - {station}"}
+ ],
+ "permissions": [
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1},
+  {"role": "Station Manager", "read": 1}
+ ],
+ "sort_field": "modified"
+}

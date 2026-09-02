@@ -1,0 +1,25 @@
+{
+ "name": "GSTR-1 Filing Invoice",
+ "module": "PP Management",
+ "doctype": "DocType",
+ "document_type": "",
+ "is_submittable": 0,
+ "istable": 1,
+ "fields": [
+  {"fieldname": "invoice_number", "fieldtype": "Data", "label": "Invoice Number", "in_list_view": 1},
+  {"fieldname": "invoice_date", "fieldtype": "Date", "label": "Invoice Date", "in_list_view": 1},
+  {"fieldname": "buyer_gstin", "fieldtype": "Data", "label": "Buyer GSTIN"},
+  {"fieldname": "buyer_name", "fieldtype": "Data", "label": "Buyer Name", "in_list_view": 1},
+  {"fieldname": "place_of_supply", "fieldtype": "Data", "label": "Place of Supply", "default": "01"},
+  {"fieldname": "invoice_type", "fieldtype": "Select", "label": "Invoice Type", "options": "\nRegular\nSEZ\nExport", "default": "Regular"},
+  {"fieldname": "hsn_code", "fieldtype": "Data", "label": "HSN Code", "in_list_view": 1},
+  {"fieldname": "quantity", "fieldtype": "Float", "label": "Quantity (L)", "in_list_view": 1},
+  {"fieldname": "tax_rate", "fieldtype": "Float", "label": "Tax Rate (%)", "in_list_view": 1},
+  {"fieldname": "taxable_value", "fieldtype": "Currency", "label": "Taxable Value", "in_list_view": 1},
+  {"fieldname": "cgst", "fieldtype": "Currency", "label": "CGST", "in_list_view": 1},
+  {"fieldname": "sgst", "fieldtype": "Currency", "label": "SGST", "in_list_view": 1},
+  {"fieldname": "igst", "fieldtype": "Currency", "label": "IGST"},
+  {"fieldname": "cess", "fieldtype": "Currency", "label": "Cess"}
+ ],
+ "permissions": []
+}

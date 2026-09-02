@@ -1,0 +1,17 @@
+{
+ "name": "GSTR-2A Reconciliation Report",
+ "module": "PP Management",
+ "doctype": "Report",
+ "document_type": "Stock Purchase Decantation",
+ "report_type": "Script Report",
+ "is_standard": "Yes",
+ "roles": [
+  {"role": "Compliance Officer"},
+  {"role": "Petrol Pump Auditor"}
+ ],
+ "filters": [
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date"}
+ ],
+ "ref_doctype": "Stock Purchase Decantation"
+}

@@ -1,0 +1,20 @@
+{
+ "name": "Report Export",
+ "module": "PP Management",
+ "doctype": "Report",
+ "document_type": "Fuel Sale",
+ "report_type": "Script Report",
+ "is_standard": "Yes",
+ "roles": [
+  {"role": "Station Manager"},
+  {"role": "System Manager"},
+  {"role": "Petrol Pump Auditor"}
+ ],
+ "filters": [
+  {"fieldname": "report_type", "fieldtype": "Select", "label": "Report Type", "options": "\nDaily Sales\nStock Register\nCredit Statement\nAll"},
+  {"fieldname": "from_date", "fieldtype": "Date", "label": "From Date"},
+  {"fieldname": "to_date", "fieldtype": "Date", "label": "To Date"},
+  {"fieldname": "export_format", "fieldtype": "Select", "label": "Export Format", "options": "\nCSV\nExcel"}
+ ],
+ "ref_doctype": "Fuel Sale"
+}
