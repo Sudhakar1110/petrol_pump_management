@@ -4,12 +4,14 @@ import json
 
 
 @click.command("fix-workspace")
-def fix_workspace():
+@click.pass_context
+def fix_workspace(ctx):
     """Fix Petrol Pump Management workspace - delete stale entries and create fresh with all links.
 
     Usage: bench --site <site-name> fix-workspace
     """
-    frappe.init()
+    site = ctx.obj.site if ctx.obj else None
+    frappe.init(site=site)
     frappe.connect()
 
     print("=" * 60)
