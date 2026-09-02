@@ -120,7 +120,7 @@ def fix_workspace():
     print(f"  Inserting {len(links_data)} links via SQL...")
     now = frappe.utils.now_datetime()
 
-    for link in links_data:
+    for idx, link in enumerate(links_data, start=1):
         link_name = frappe.utils.cstr(frappe.utils.random_string(8))
         frappe.db.sql("""
             INSERT INTO `tabWorkspace Link`
@@ -134,7 +134,7 @@ def fix_workspace():
                     %s, %s, %s, %s, %s)
         """, (
             link_name, now, now, "Administrator", "Administrator",
-            ws_name, link.get("idx", 0),
+            ws_name, idx,
             link["type"], link["label"],
             link.get("link_type", ""), link.get("link_to", ""),
             link.get("hidden", 0), link.get("is_query_report", 0),
@@ -164,7 +164,7 @@ def fix_workspace():
         all_links = frappe.db.get_all(
             "Workspace Link",
             filters={"parent": ws_name},
-            fields=["type", "label", "link_type", "link_to"],
+            fields=["type", "label", "link_type", "link_to", "idx"],
             order_by="idx asc",
         )
         for link in all_links:
