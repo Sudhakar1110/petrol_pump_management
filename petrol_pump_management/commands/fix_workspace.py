@@ -3,6 +3,7 @@ import click
 import frappe
 import json
 import os
+import frappe.utils
 
 
 def get_site_from_args():
@@ -20,7 +21,7 @@ def get_site_from_args():
 
 @click.command("fix-workspace")
 def fix_workspace():
-    """Fix Petrol Pump Management workspace - delete stale entries and create fresh with all links.
+    """Fix Petrol Pump Management workspace with all card breaks and links.
 
     Usage: bench --site <site-name> fix-workspace
     """
@@ -64,36 +65,37 @@ def fix_workspace():
     frappe.db.commit()
     print("  Done!")
 
-    # Step 2: Create workspace - load from JSON file (ERPNext format)
+    # Step 2: Load workspace data from JSON file
     print("\n[2/3] Creating workspace with all links...")
 
-    # Try to load from the JSON file first
     ws_json_path = os.path.join(
         os.path.dirname(os.path.dirname(__file__)),
         "pp_management", "workspace", "petrol_pump_management.json"
     )
 
     if os.path.exists(ws_json_path):
-        print(f"  Loading from JSON file: {ws_json_path}")
+        print(f"  Loading from: {ws_json_path}")
         with open(ws_json_path, "r") as f:
             ws_data = json.load(f)
     else:
-        print(f"  JSON file not found, using hardcoded data")
+        print("  JSON not found, using hardcoded data")
         ws_data = _get_hardcoded_workspace_data()
 
-    # Build workspace doc from JSON data
+    links_data = ws_data["links"]
+    shortcuts_data = ws_data.get("shortcuts", [])
+
+    # Step 2a: Create workspace WITHOUT links (just the doc itself)
     ws = frappe.get_doc({
         "doctype": "Workspace",
-        "label": ws_data["label"],
-        "title": ws_data["title"],
-        "module": ws_data["module"],
-        "icon": ws_data.get("icon", "octicon octicon-file"),
-        "indicator_color": ws_data.get("indicator_color", "blue"),
+        "label": ws_name,
+        "title": ws_name,
+        "module": "PP Management",
+        "icon": ws_data.get("icon", "octicon octicon-fuel"),
+        "indicator_color": ws_data.get("indicator_color", "orange"),
         "public": ws_data.get("public", 1),
         "is_hidden": ws_data.get("is_hidden", 0),
         "content": ws_data["content"],
-        "links": ws_data["links"],
-        "shortcuts": ws_data.get("shortcuts", []),
+        "shortcuts": shortcuts_data,
         "charts": ws_data.get("charts", []),
         "number_cards": ws_data.get("number_cards", []),
         "custom_blocks": ws_data.get("custom_blocks", []),
@@ -112,9 +114,36 @@ def fix_workspace():
     ws.flags.ignore_mandatory = True
     ws.insert(ignore_permissions=True)
     frappe.db.commit()
-    frappe.clear_cache()
+    print(f"  Workspace '{ws.name}' created (without links yet)")
 
-    print(f"  Workspace '{ws.name}' created!")
+    # Step 2b: Insert links via raw SQL with correct parent reference
+    print(f"  Inserting {len(links_data)} links via SQL...")
+    now = frappe.utils.now_datetime()
+
+    for link in links_data:
+        link_name = frappe.utils.cstr(frappe.utils.random_string(8))
+        frappe.db.sql("""
+            INSERT INTO `tabWorkspace Link`
+            (name, creation, modified, owner, modified_by,
+             parent, parentfield, parenttype, docstatus,
+             idx, type, label, link_type, link_to,
+             hidden, is_query_report, onboard, dependencies, link_count)
+            VALUES (%s, %s, %s, %s, %s,
+                    %s, 'links', 'Workspace', 0,
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s)
+        """, (
+            link_name, now, now, "Administrator", "Administrator",
+            ws_name, link.get("idx", 0),
+            link["type"], link["label"],
+            link.get("link_type", ""), link.get("link_to", ""),
+            link.get("hidden", 0), link.get("is_query_report", 0),
+            link.get("onboard", 0), link.get("dependencies", ""),
+            link.get("link_count", 0),
+        ))
+
+    frappe.db.commit()
+    frappe.clear_cache()
 
     # Step 3: Verify
     print("\n[3/3] Verifying...")
@@ -122,6 +151,14 @@ def fix_workspace():
     exists = frappe.db.exists("Workspace", ws_name)
     print(f"  Workspace exists: {exists}")
     print(f"  Links count: {count}")
+
+    # Check parentfield values
+    sample = frappe.db.sql(
+        "SELECT parent, parentfield, parenttype, type, label FROM `tabWorkspace Link` WHERE parent = %s LIMIT 5",
+        ws_name, as_dict=True,
+    )
+    if sample:
+        print(f"  Sample link parentfield: {sample[0].parentfield}, parenttype: {sample[0].parenttype}")
 
     if count > 0:
         all_links = frappe.db.get_all(
