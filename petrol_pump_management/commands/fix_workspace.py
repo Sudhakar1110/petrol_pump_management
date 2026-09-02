@@ -10,7 +10,7 @@ def fix_workspace(ctx):
 
     Usage: bench --site <site-name> fix-workspace
     """
-    site = ctx.obj.site if ctx.obj else None
+    site = ctx.obj.get("site") if ctx.obj else None
     frappe.init(site=site)
     frappe.connect()
 
