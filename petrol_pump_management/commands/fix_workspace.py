@@ -266,7 +266,7 @@ def _get_workspace_data():
         {"type": "Link", "label": "GST VAT Summary", "link_type": "Report", "link_to": "GST VAT Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Employee Commission Report", "link_type": "Report", "link_to": "Employee Commission Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Cash Flow Report", "link_type": "Report", "link_to": "Cash Flow Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
-        {"type": "Link", "label": "Day Book", "link_type": "Report", "link_to": "Day Book", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "PP Day Book", "link_type": "Report", "link_to": "PP Day Book", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Bank Reconciliation Report", "link_type": "Report", "link_to": "Bank Reconciliation Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Tally Export Report", "link_type": "Report", "link_to": "Tally Export Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Profit Loss Statement", "link_type": "Report", "link_to": "Profit Loss Statement", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0},

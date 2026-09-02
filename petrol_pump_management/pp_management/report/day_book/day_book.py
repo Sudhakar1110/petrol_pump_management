@@ -34,27 +34,27 @@ def execute(filters=None):
 
     # Credit Sales
     credit = frappe.db.sql("""
-        SELECT creation, name, customer, total_amount, payment_mode
+        SELECT creation, name, customer, amount
         FROM `tabCredit Sale Invoice`
-        WHERE transaction_date = %s AND docstatus = 1
+        WHERE due_date = %s AND docstatus = 1
         ORDER BY creation
     """, (date,), as_dict=True)
     for c in credit:
         data.append({"time": str(c.creation)[-8:], "type": "Credit Sale", "reference": c.name,
-                      "party": c.customer, "debit": c.total_amount, "credit": 0,
+                      "party": c.customer, "debit": c.amount, "credit": 0,
                       "payment_mode": "Credit"})
 
     # Payments Received
     payments = frappe.db.sql("""
-        SELECT creation, name, customer, amount_received, payment_mode
+        SELECT creation, name, customer, amount, mode
         FROM `tabPayment Receipt`
-        WHERE payment_date = %s AND docstatus = 1
+        WHERE DATE(received_on) = %s AND docstatus = 1
         ORDER BY creation
     """, (date,), as_dict=True)
     for p in payments:
         data.append({"time": str(p.creation)[-8:], "type": "Payment Received", "reference": p.name,
-                      "party": p.customer, "debit": 0, "credit": p.amount_received,
-                      "payment_mode": p.payment_mode})
+                      "party": p.customer, "debit": 0, "credit": p.amount,
+                      "payment_mode": p.mode})
 
     # Expenses
     expenses = frappe.db.sql("""

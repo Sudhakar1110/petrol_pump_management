@@ -75,7 +75,7 @@
   {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "GST VAT Summary", "link_count": 0, "link_to": "GST VAT Summary", "link_type": "Report", "onboard": 0, "type": "Link"},
   {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "Employee Commission Report", "link_count": 0, "link_to": "Employee Commission Report", "link_type": "Report", "onboard": 0, "type": "Link"},
   {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "Cash Flow Report", "link_count": 0, "link_to": "Cash Flow Report", "link_type": "Report", "onboard": 0, "type": "Link"},
-  {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "Day Book", "link_count": 0, "link_to": "Day Book", "link_type": "Report", "onboard": 0, "type": "Link"},
+  {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "PP Day Book", "link_count": 0, "link_to": "PP Day Book", "link_type": "Report", "onboard": 0, "type": "Link"},
   {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "Bank Reconciliation Report", "link_count": 0, "link_to": "Bank Reconciliation Report", "link_type": "Report", "onboard": 0, "type": "Link"},
   {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "Tally Export Report", "link_count": 0, "link_to": "Tally Export Report", "link_type": "Report", "onboard": 0, "type": "Link"},
   {"dependencies": "", "hidden": 0, "is_query_report": 1, "label": "Profit Loss Statement", "link_count": 0, "link_to": "Profit Loss Statement", "link_type": "Report", "onboard": 0, "type": "Link"},
