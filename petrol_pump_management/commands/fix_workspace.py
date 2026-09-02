@@ -1,6 +1,21 @@
+import sys
 import click
 import frappe
 import json
+
+
+def get_site_from_args():
+    """Extract site name from bench CLI arguments."""
+    args = sys.argv
+    for i, arg in enumerate(args):
+        if arg == "--site" and i + 1 < len(args):
+            return args[i + 1]
+        if arg.startswith("--site="):
+            return arg.split("=", 1)[1]
+        if arg == "-s" and i + 1 < len(args):
+            return args[i + 1]
+    return None
+
 
 @click.command("fix-workspace")
 def fix_workspace():
@@ -8,6 +23,12 @@ def fix_workspace():
 
     Usage: bench --site <site-name> fix-workspace
     """
+    site = get_site_from_args()
+    if not site:
+        print("ERROR: No site specified. Usage: bench --site <site-name> fix-workspace")
+        sys.exit(1)
+
+    frappe.init(site=site)
     frappe.connect()
 
     print("=" * 60)
