@@ -96,7 +96,7 @@ def fix_workspace():
     ]
 
     content = json.dumps([
-        {"type": "header", "data": {"text": "Your Shortcuts", "level": 4, "col": 12}},
+        {"type": "header", "data": {"text": "Petrol Pump Management", "level": 4, "col": 12}},
         {"type": "spacer", "data": {"col": 12}},
         {"type": "header", "data": {"text": "Configuration", "level": 4, "col": 12}},
         {"type": "card", "data": {"card_name": "Configuration", "col": 4}},
@@ -128,7 +128,6 @@ def fix_workspace():
     })
 
     ws.flags.with_module = True
-    ws.flags.ignore_links = True
     ws.flags.ignore_validate = True
     ws.flags.ignore_permissions = True
     ws.flags.ignore_mandatory = True
