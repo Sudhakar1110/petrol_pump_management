@@ -16,113 +16,61 @@ def after_migrate():
 
 
 def _ensure_workspace():
-    """Create workspace with all links. Always rebuilds to ensure card breaks and links are shown."""
+    """Import workspace from JSON file and ensure all links are present."""
     ws_name = "Petrol Pump Management"
 
-    # Always delete and recreate to ensure clean state with all card breaks and links
-    for name in frappe.db.get_all("Workspace", filters={"module": "PP Management"}, pluck="name"):
-        frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", name)
-        frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", name)
+    # If workspace already has links, skip
+    count = frappe.db.count("Workspace Link", {"parent": ws_name})
+    if count > 0:
+        print(f"Petrol Pump Management workspace already has {count} links, skipping.")
+        return
 
-    for row in frappe.db.sql(
-        "SELECT name FROM `tabWorkspace` WHERE name LIKE %s OR name LIKE %s",
-        ("%Petrol%", "%PP%"), as_dict=True,
-    ):
-        frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", row.name)
-        frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", row.name)
+    # Import workspace from JSON file using Frappe's built-in importer
+    try:
+        from frappe.desk.page.setup_wizard.setup_wizard import setup_complete
+    except ImportError:
+        pass
 
-    frappe.db.commit()
+    # Try to import workspace from the standard location
+    ws_json_path = os.path.join(
+        os.path.dirname(__file__), "pp_management", "workspace", "petrol_pump_management.json"
+    )
+    if os.path.exists(ws_json_path):
+        with open(ws_json_path, "r") as f:
+            ws_data = json.load(f)
 
-    content = json.dumps([
-        {"type": "header", "data": {"text": "Petrol Pump Management", "level": 4, "col": 12}},
-        {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Configuration", "level": 4, "col": 12}},
-        {"type": "card", "data": {"card_name": "Configuration", "col": 4}},
-        {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Operations", "level": 4, "col": 12}},
-        {"type": "card", "data": {"card_name": "Operations", "col": 4}},
-        {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Credit & Sales", "level": 4, "col": 12}},
-        {"type": "card", "data": {"card_name": "Credit & Sales", "col": 4}},
-        {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Finance & HR", "level": 4, "col": 12}},
-        {"type": "card", "data": {"card_name": "Finance & HR", "col": 4}},
-        {"type": "spacer", "data": {"col": 12}},
-        {"type": "header", "data": {"text": "Reports", "level": 4, "col": 12}},
-        {"type": "card", "data": {"card_name": "Reports", "col": 4}},
-    ])
+        # Delete any existing broken workspace
+        for name in frappe.db.get_all("Workspace", filters={"module": "PP Management"}, pluck="name"):
+            frappe.db.sql("DELETE FROM `tabWorkspace Link` WHERE parent = %s", name)
+            frappe.db.sql("DELETE FROM `tabWorkspace` WHERE name = %s", name)
+        frappe.db.commit()
 
-    links = [
-        # Configuration Card
-        {"type": "Card Break", "label": "Configuration", "icon": "octicon octicon-gear", "link_count": 6, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 1},
-        {"type": "Link", "link_type": "DocType", "link_to": "Station Configuration", "label": "Station Configuration", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 2},
-        {"type": "Link", "link_type": "DocType", "link_to": "Tank Master", "label": "Tank Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 3},
-        {"type": "Link", "link_type": "DocType", "link_to": "Nozzle Master", "label": "Nozzle Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 4},
-        {"type": "Link", "link_type": "DocType", "link_to": "Fuel Price Master", "label": "Fuel Price Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 5},
-        {"type": "Link", "link_type": "DocType", "link_to": "Employee Master", "label": "Employee Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 6},
-        {"type": "Link", "link_type": "DocType", "link_to": "Tank Dip Chart", "label": "Tank Dip Chart", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 7},
+        # Create workspace with links
+        ws = frappe.get_doc({
+            "doctype": "Workspace",
+            "label": ws_data["label"],
+            "title": ws_data["title"],
+            "module": ws_data["module"],
+            "icon": ws_data.get("icon", "octicon octicon-file"),
+            "indicator_color": ws_data.get("indicator_color", "blue"),
+            "public": ws_data.get("public", 1),
+            "is_hidden": ws_data.get("is_hidden", 0),
+            "content": json.dumps(ws_data["content"]),
+            "links": ws_data["links"],
+        })
+        ws.flags.with_module = True
+        ws.flags.ignore_links = True
+        ws.flags.ignore_validate = True
+        ws.flags.ignore_permissions = True
+        ws.flags.ignore_mandatory = True
+        ws.insert(ignore_permissions=True)
+        frappe.db.commit()
+        frappe.clear_cache()
 
-        # Operations Card
-        {"type": "Card Break", "label": "Operations", "icon": "octicon octicon-gear", "link_count": 8, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 8},
-        {"type": "Link", "link_type": "DocType", "link_to": "Shift", "label": "Shift", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 9},
-        {"type": "Link", "link_type": "DocType", "link_to": "Shift Nozzle Allotment", "label": "Shift Nozzle Allotment", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 10},
-        {"type": "Link", "link_type": "DocType", "link_to": "Fuel Sale", "label": "Fuel Sale", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 11},
-        {"type": "Link", "link_type": "DocType", "link_to": "Meter Reading", "label": "Meter Reading", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 12},
-        {"type": "Link", "link_type": "DocType", "link_to": "Daily Stock Register", "label": "Daily Stock Register", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 13},
-        {"type": "Link", "link_type": "DocType", "link_to": "Stock Purchase Decantation", "label": "Stock Purchase Decantation", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 14},
-        {"type": "Link", "link_type": "DocType", "link_to": "Trip Voucher", "label": "Trip Voucher", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 15},
-        {"type": "Link", "link_type": "DocType", "link_to": "PP Supplier Master", "label": "PP Supplier Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 16},
-
-        # Credit & Sales Card
-        {"type": "Card Break", "label": "Credit & Sales", "icon": "octicon octicon-credit-card", "link_count": 6, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 17},
-        {"type": "Link", "link_type": "DocType", "link_to": "PP Customer", "label": "PP Customer", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 18},
-        {"type": "Link", "link_type": "DocType", "link_to": "Vehicle Master", "label": "Vehicle Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 19},
-        {"type": "Link", "link_type": "DocType", "link_to": "Credit Sale Invoice", "label": "Credit Sale Invoice", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 20},
-        {"type": "Link", "link_type": "DocType", "link_to": "Payment Receipt", "label": "Payment Receipt", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 21},
-        {"type": "Link", "link_type": "DocType", "link_to": "Credit Limit Ledger", "label": "Credit Limit Ledger", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 22},
-        {"type": "Link", "link_type": "DocType", "link_to": "ANPR Scan Log", "label": "ANPR Scan Log", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 23},
-
-        # Finance & HR Card
-        {"type": "Card Break", "label": "Finance & HR", "icon": "octicon octicon-dollar", "link_count": 5, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 24},
-        {"type": "Link", "link_type": "DocType", "link_to": "Expense Entry", "label": "Expense Entry", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 25},
-        {"type": "Link", "link_type": "DocType", "link_to": "Attendance Register", "label": "Attendance Register", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 26},
-        {"type": "Link", "link_type": "DocType", "link_to": "Advance Amount", "label": "Advance Amount", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 27},
-        {"type": "Link", "link_type": "DocType", "link_to": "Bank Deposit", "label": "Bank Deposit", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 28},
-        {"type": "Link", "link_type": "DocType", "link_to": "Day Settlement", "label": "Day Settlement", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 29},
-
-        # Reports Card
-        {"type": "Card Break", "label": "Reports", "icon": "octicon octicon-graph", "link_count": 5, "hidden": 0, "is_query_report": 0, "onboard": 0, "idx": 30},
-        {"type": "Link", "link_type": "Report", "link_to": "Daily Sales Summary", "label": "Daily Sales Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 31},
-        {"type": "Link", "link_type": "Report", "link_to": "Shift Settlement Report", "label": "Shift Settlement Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 32},
-        {"type": "Link", "link_type": "Report", "link_to": "Stock Variation Report", "label": "Stock Variation Report", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 33},
-        {"type": "Link", "link_type": "Report", "link_to": "Credit Customer Ageing", "label": "Credit Customer Ageing", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 34},
-        {"type": "Link", "link_type": "Report", "link_to": "GST VAT Summary", "label": "GST VAT Summary", "hidden": 0, "is_query_report": 1, "onboard": 0, "dependencies": "", "link_count": 0, "idx": 35},
-    ]
-
-    # Create workspace with links via ORM (proper child table save)
-    ws = frappe.get_doc({
-        "doctype": "Workspace",
-        "label": ws_name,
-        "title": ws_name,
-        "module": "PP Management",
-        "icon": "octicon octicon-fuel",
-        "indicator_color": "orange",
-        "public": 1,
-        "is_hidden": 0,
-        "content": content,
-        "links": links,
-    })
-    ws.flags.with_module = True
-    ws.flags.ignore_links = True
-    ws.flags.ignore_validate = True
-    ws.flags.ignore_permissions = True
-    ws.flags.ignore_mandatory = True
-    ws.insert(ignore_permissions=True)
-    frappe.db.commit()
-    frappe.clear_cache()
-
-    final_count = frappe.db.count("Workspace Link", {"parent": ws_name})
-    print(f"Petrol Pump Management workspace created with {final_count} links!")
+        final_count = frappe.db.count("Workspace Link", {"parent": ws_name})
+        print(f"Petrol Pump Management workspace imported with {final_count} links!")
+    else:
+        print(f"WARNING: Workspace JSON not found at {ws_json_path}")
 
 
 def create_roles():
