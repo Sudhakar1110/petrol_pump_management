@@ -128,6 +128,7 @@ def fix_workspace():
     })
 
     ws.flags.with_module = True
+    ws.flags.ignore_links = True
     ws.flags.ignore_validate = True
     ws.flags.ignore_permissions = True
     ws.flags.ignore_mandatory = True
