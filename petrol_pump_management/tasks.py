@@ -52,7 +52,7 @@ def send_credit_reminders():
     """, (today(),), as_dict=True)
     for inv in overdue:
         try:
-            settings = frappe.get_single("Notification Settings")
+            settings = frappe.get_single("PP Notification Settings")
             if not settings.enable_sms:
                 continue
             mobile = frappe.db.get_value("PP Customer", inv.customer, "mobile")
@@ -80,7 +80,7 @@ def check_stock_levels():
     for tank in tanks:
         if tank.safe_stock_level and tank.current_stock and tank.current_stock < tank.safe_stock_level:
             try:
-                settings = frappe.get_single("Notification Settings")
+                settings = frappe.get_single("PP Notification Settings")
                 if settings.enable_sms:
                     station = frappe.db.get_single_value("Station Configuration", "station_name") or "Station"
                     msg = f"LOW STOCK ALERT: {tank.fuel_type} tank {tank.name} has only {tank.current_stock}L remaining. Safe level: {tank.safe_stock_level}L. - {station}"
@@ -110,7 +110,7 @@ def auto_block_credit_customers():
         frappe.db.set_value("PP Customer", cust.name, "is_blocked", 1)
         # Send limit breach SMS
         try:
-            settings = frappe.get_single("Notification Settings")
+            settings = frappe.get_single("PP Notification Settings")
             if settings.enable_sms and settings.sms_limit_breach:
                 mobile = frappe.db.get_value("PP Customer", cust.name, "mobile")
                 station = frappe.db.get_single_value("Station Configuration", "station_name") or "Station"
@@ -139,7 +139,7 @@ def send_expiry_alerts():
     """, (today(), add_days(today(), 30)), as_dict=True)
     for lube in lube_stock:
         try:
-            settings = frappe.get_single("Notification Settings")
+            settings = frappe.get_single("PP Notification Settings")
             if settings.enable_sms:
                 station = frappe.db.get_single_value("Station Configuration", "station_name") or "Station"
                 msg = f"EXPIRY ALERT: {lube.lube_name} expires on {lube.expiry_date}. Remaining: {lube.quantity}. - {station}"
@@ -254,7 +254,7 @@ def send_weekly_credit_email():
     """, as_dict=True)
     for cust in customers:
         try:
-            settings = frappe.get_single("Notification Settings")
+            settings = frappe.get_single("PP Notification Settings")
             if not settings.enable_email:
                 continue
             statement = frappe.db.get_value("Credit Statement", {"customer": cust.name}, "name", order_by="creation desc")

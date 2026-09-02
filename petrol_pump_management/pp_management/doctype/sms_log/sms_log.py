@@ -18,7 +18,7 @@ class SMSLog(Document):
 @frappe.whitelist()
 def send_sms(sms_log_doc):
     """Send SMS via configured gateway"""
-    settings = frappe.get_single("Notification Settings")
+    settings = frappe.get_single("PP Notification Settings")
     if not settings.enable_sms:
         sms_log_doc.status = "Pending"
         sms_log_doc.save(ignore_permissions=True)
@@ -78,7 +78,7 @@ def _send_via_http_api(settings, to_number, message):
     """Send via generic HTTP API"""
     url = settings.custom_sms_api_url
     if not url:
-        frappe.throw("SMS API URL not configured in Notification Settings")
+        frappe.throw("SMS API URL not configured in PP Notification Settings")
     payload = settings.custom_sms_payload_format.format(
         to=to_number, message=message, api_key=settings.custom_sms_api_key
     )

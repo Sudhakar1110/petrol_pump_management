@@ -1,4 +1,6 @@
 import frappe
 from frappe.model.document import Document
-class NotificationSettings(Document):
+
+
+class PPNotificationSettings(Document):
     pass

@@ -68,7 +68,7 @@ def on_swipe_settlement_submit(doc, method):
 def _send_credit_sale_sms(customer, sale_name, amount, qty, fuel_type, balance):
     """Send SMS on credit sale"""
     try:
-        settings = frappe.get_single("Notification Settings")
+        settings = frappe.get_single("PP Notification Settings")
         if not settings.enable_sms:
             return
         mobile = frappe.db.get_value("PP Customer", customer, "mobile")
@@ -94,7 +94,7 @@ def _send_credit_sale_sms(customer, sale_name, amount, qty, fuel_type, balance):
 def _send_cash_sale_sms(customer, sale_name, amount, payment_mode):
     """Send SMS on cash/card/UPI sale"""
     try:
-        settings = frappe.get_single("Notification Settings")
+        settings = frappe.get_single("PP Notification Settings")
         if not settings.enable_sms:
             return
         mobile = frappe.db.get_value("PP Customer", customer, "mobile")
@@ -117,7 +117,7 @@ def _send_cash_sale_sms(customer, sale_name, amount, payment_mode):
 def _send_payment_receipt_sms(customer, receipt_name, amount, mode):
     """Send SMS on payment receipt"""
     try:
-        settings = frappe.get_single("Notification Settings")
+        settings = frappe.get_single("PP Notification Settings")
         if not settings.enable_sms:
             return
         mobile = frappe.db.get_value("PP Customer", customer, "mobile")

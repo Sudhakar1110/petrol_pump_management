@@ -199,7 +199,7 @@ def _get_workspace_data():
         {"type": "Link", "label": "Employee Master", "link_type": "DocType", "link_to": "Employee Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "Commission Rule", "link_type": "DocType", "link_to": "Commission Rule", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
         {"type": "Link", "label": "PP Supplier Master", "link_type": "DocType", "link_to": "PP Supplier Master", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
-        {"type": "Link", "label": "Notification Settings", "link_type": "DocType", "link_to": "Notification Settings", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
+        {"type": "Link", "label": "PP Notification Settings", "link_type": "DocType", "link_to": "PP Notification Settings", "hidden": 0, "is_query_report": 0, "onboard": 0, "dependencies": "", "link_count": 0},
 
         # ── Operations ──
         {"type": "Card Break", "label": "Operations", "hidden": 0, "is_query_report": 0, "link_count": 0, "onboard": 0},

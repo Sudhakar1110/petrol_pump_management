@@ -10,7 +10,7 @@ class EmailLog(Document):
 @frappe.whitelist()
 def send_email_notification(email_doc):
     """Send email using Frappe's built-in email system"""
-    settings = frappe.get_single("Notification Settings")
+    settings = frappe.get_single("PP Notification Settings")
     if not settings.enable_email:
         return
 
